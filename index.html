@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Revelación de Género</title>
+
+    <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=Poppins:wght@300;400&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+    <link rel="shortcut icon" href="img/biberon.png" type="image/x-icon">
+</head>
+
+<body>
+
+    <!-- INTRO -->
+    <div id="intro" class="intro">
+        <div class="intro-content">
+            <img src="img/biberon.png" class="bottle-intro">
+            <h2>Tenemos algo muy especial para ti</h2>
+            <button class="intro-btn" onclick="entrar()">Descubrir invitación</button>
+        </div>
+    </div>
+
+    <!-- MAIN -->
+    <div id="main" class="wrapper hidden">
+
+        <div class="card">
+            <div class="card-bg" id="cardBg"></div>
+
+            <div class="content">
+
+                <div class="hosts">
+                    Marisol<br>&<br>Andres Felipe
+                </div>
+
+                <h1>Te invitan</h1>
+
+                <div class="question">A descubrir… ¿ Niña o Niño ?</div>
+
+                <div class="text">
+                    Hay momentos que transforman la vida…<br><br>
+
+                    Un pequeño latido viene en camino,<br>
+                    lleno de amor, ilusión y nuevos comienzos.<br><br>
+
+                    Queremos que seas parte de este instante tan especial.
+                </div>
+
+                <div class="info">
+                    <strong>14 de junio de 2026</strong><br>
+                    3:00 PM<br>
+                    Bosque Popular El Prado
+                </div>
+
+                <div class="extra-box">
+
+                    <div class="dress-card">
+                        <strong>Código de vestimenta</strong>
+                        tonos claros, beige y habanos
+                    </div>
+
+                    <div class="extra">
+                        Haz parte de esta experiencia<br><br>
+
+                        <div class="dimanica">
+
+                            <div class="opcion">
+                                <span class="titulo">Niño</span>
+                                <p>Si crees que será niño,<br>trae pañitos</p>
+                            </div>
+
+                            <div class="opcion">
+                                <span class="titulo">Niña</span>
+                                <p>Si crees que será niña,<br>trae pañales</p>
+                            </div>
+
+                        </div>
+                    </div>
+
+                </div>
+
+                <button class="btn" onclick="confirmar()">
+                    Confirmar asistencia
+                </button>
+
+            </div>
+        </div>
+
+    </div>
+
+    <script src="script.js"></script>
+</body>
+
+</html>
