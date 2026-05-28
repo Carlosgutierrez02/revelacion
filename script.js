@@ -180,66 +180,63 @@ function mostrarToast(texto, duracion = 2500, esError = false){
     toastTimer = setTimeout(()=> t.classList.remove("show"), duracion);
 }
 
-/* ---------- CONFETI (dramático) ---------- */
+/* ---------- CONFETI (corazones + puntos + estrellas, vaivén suave) ---------- */
 function lanzarConfeti(){
     if(REDUCED_MOTION) return;
     const cont = document.getElementById("confetti");
     if(!cont) return;
 
-    const colores = [
-        "#FFB8C5", "#A8DAE0",          // pasteles
-        "#E03E63", "#1E7A89",          // inks vivos
-        "#C26B3A", "#8B4A28",          // cobres
-        "#F4ECD8", "#E5D4B0",          // creams
-        "#FFD93D", "#FF6B9D"           // pop extra (amarillo + rosa fucsia)
+    // Paleta suave: pasteles dominantes + un dorado/cobre como acento
+    const paletaPasteles = [
+        "#FFB8C5", "#FFD3DC", "#FF9FB3",   // rosas
+        "#A8DAE0", "#C2E8ED", "#8FCFD8",   // azules
+        "#F4ECD8"                           // cream
     ];
-    const formas = ["", "circle", "ribbon"];
-    const total  = 180;
+    const paletaAcentos = ["#FFD93D", "#FFC857", "#C26B3A"]; // dorado/cobre, dispersos
 
-    // Ráfaga inicial (todas desde arriba, ancho completo)
+    // 60% corazones, 30% puntos, 10% estrellas
+    const formas = [
+        "heart","heart","heart","heart","heart","heart",
+        "dot","dot","dot",
+        "star"
+    ];
+
+    const total = 110;
+
     for(let i = 0; i < total; i++){
-        spawn(cont, colores, formas, {
-            x: Math.random() * 100,            // vw
-            dx: (Math.random() - 0.5) * 200,   // px de deriva horizontal
-            delay: Math.random() * 0.35,
-            dur: 2.5 + Math.random() * 2,
-            size: 8 + Math.random() * 14
+        const esAcento = Math.random() < 0.18;
+        const color = esAcento
+            ? paletaAcentos[Math.floor(Math.random() * paletaAcentos.length)]
+            : paletaPasteles[Math.floor(Math.random() * paletaPasteles.length)];
+
+        spawn(cont, color, formas, {
+            x:     Math.random() * 100,                 // vw
+            sway:  20 + Math.random() * 40,             // amplitud del vaivén
+            delay: Math.random() * 1.2,                 // entrada escalonada (no todos a la vez)
+            dur:   4 + Math.random() * 2.5,             // caída lenta y elegante
+            size:  10 + Math.random() * 14
         });
     }
-
-    // Segunda oleada: bursts laterales para sensación de "explosión"
-    setTimeout(()=>{
-        for(let i = 0; i < 60; i++){
-            spawn(cont, colores, formas, {
-                x: (i % 2 === 0 ? -5 : 105),
-                dx: (i % 2 === 0 ? 1 : -1) * (200 + Math.random() * 200),
-                delay: Math.random() * 0.2,
-                dur: 2 + Math.random() * 1.5,
-                size: 10 + Math.random() * 12
-            });
-        }
-    }, 200);
 }
 
-function spawn(cont, colores, formas, opts){
+function spawn(cont, color, formas, opts){
+    const forma = formas[Math.floor(Math.random() * formas.length)];
     const p = document.createElement("div");
-    p.className = "confetti-piece " + formas[Math.floor(Math.random() * formas.length)];
+    p.className = "confetti-piece " + forma;
 
-    const isRibbon = p.classList.contains("ribbon");
-    const w = opts.size;
-    const h = isRibbon ? w * 2.2 : (p.classList.contains("circle") ? w : w * 1.4);
+    // Estrellas un toque más pequeñas para no robar protagonismo
+    const size = forma === "star" ? opts.size * 0.85 : opts.size;
 
     p.style.left   = opts.x + "vw";
-    p.style.width  = w + "px";
-    p.style.height = h + "px";
-    p.style.background = colores[Math.floor(Math.random() * colores.length)];
-    p.style.setProperty("--dx", opts.dx + "px");
+    p.style.width  = size + "px";
+    p.style.height = size + "px";
+    p.style.setProperty("--c",    color);
+    p.style.setProperty("--sway", opts.sway + "px");
     p.style.animationDuration = opts.dur + "s";
     p.style.animationDelay    = opts.delay + "s";
-    p.style.transform = `rotate(${Math.random() * 360}deg)`;
 
     cont.appendChild(p);
-    setTimeout(()=> p.remove(), (opts.dur + opts.delay + 0.3) * 1000);
+    setTimeout(()=> p.remove(), (opts.dur + opts.delay + 0.4) * 1000);
 }
 
 /* ---------- COUNTDOWN ---------- */

@@ -230,14 +230,6 @@ h1{
     font-family:'DM Serif Display', serif;
     font-size:16px;
 }
-.dress-card .note{
-    display:block;
-    margin-top:6px;
-    font-size:12px;
-    font-style:italic;
-    color:var(--copper-dark);
-    opacity:.9;
-}
 
 .extra{
     font-size:15px;
@@ -672,7 +664,7 @@ h1{
     width:100%;
 }
 
-/* CONFETI — capa por encima de TODO */
+/* CONFETI — corazones y puntos con vaivén */
 .confetti{
     position:fixed;
     inset:0;
@@ -682,19 +674,44 @@ h1{
 }
 .confetti-piece{
     position:absolute;
-    top:-10vh;
-    border-radius:2px;
-    box-shadow:0 3px 6px rgba(0,0,0,0.25);
+    top:-8vh;
+    width:18px;
+    height:18px;
     will-change:transform, opacity;
-    animation:confettiFall linear forwards;
+    animation:confettiFall var(--dur,5s) cubic-bezier(.45,.05,.55,.95) forwards;
+    opacity:0;
 }
-.confetti-piece.circle{ border-radius:50%; }
-.confetti-piece.ribbon{ border-radius:1px; }
+
+/* Forma: corazón (mask SVG) */
+.confetti-piece.heart{
+    background:var(--c, #FFB8C5);
+    -webkit-mask:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'><path d='M12 21s-7-4.5-9.5-9C.8 9.4 2.7 5 6.5 5c2 0 3.5 1 5.5 3 2-2 3.5-3 5.5-3 3.8 0 5.7 4.4 4 7-2.5 4.5-9.5 9-9.5 9z'/></svg>") center/contain no-repeat;
+            mask:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'><path d='M12 21s-7-4.5-9.5-9C.8 9.4 2.7 5 6.5 5c2 0 3.5 1 5.5 3 2-2 3.5-3 5.5-3 3.8 0 5.7 4.4 4 7-2.5 4.5-9.5 9-9.5 9z'/></svg>") center/contain no-repeat;
+    filter:drop-shadow(0 2px 4px rgba(0,0,0,0.12));
+}
+
+/* Forma: punto */
+.confetti-piece.dot{
+    background:var(--c, #FFD93D);
+    border-radius:50%;
+    box-shadow:0 0 10px var(--c, #FFD93D), 0 2px 4px rgba(0,0,0,0.15);
+}
+
+/* Forma: estrella pequeña */
+.confetti-piece.star{
+    background:var(--c, #FFD93D);
+    -webkit-mask:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'><path d='M12 2 L14.6 9 22 9.5 16.3 14.2 18.2 21.5 12 17.5 5.8 21.5 7.7 14.2 2 9.5 9.4 9 z'/></svg>") center/contain no-repeat;
+            mask:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'><path d='M12 2 L14.6 9 22 9.5 16.3 14.2 18.2 21.5 12 17.5 5.8 21.5 7.7 14.2 2 9.5 9.4 9 z'/></svg>") center/contain no-repeat;
+    filter:drop-shadow(0 0 6px var(--c, #FFD93D));
+}
 
 @keyframes confettiFall{
-    0%   { transform:translate3d(0,0,0) rotate(0deg) scale(1); opacity:1; }
-    50%  { transform:translate3d(var(--dx,0px), 55vh, 0) rotate(360deg) scale(1); opacity:1; }
-    100% { transform:translate3d(var(--dx,0px), 115vh, 0) rotate(960deg) scale(.85); opacity:0; }
+    0%   { transform:translate3d(0, 0, 0) rotate(0deg); opacity:0; }
+    8%   { opacity:1; }
+    25%  { transform:translate3d(calc(var(--sway, 30px) * 1),  28vh, 0) rotate(120deg); }
+    50%  { transform:translate3d(calc(var(--sway, 30px) * -1), 55vh, 0) rotate(240deg); }
+    75%  { transform:translate3d(calc(var(--sway, 30px) * 1),  82vh, 0) rotate(360deg); }
+    100% { transform:translate3d(calc(var(--sway, 30px) * -.5), 115vh, 0) rotate(480deg); opacity:0; }
 }
 
 /* "Pop" sutil del card cuando se dispara confeti */
