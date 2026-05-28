@@ -4,13 +4,9 @@
 
 /* ---------- CONFIG ---------- */
 const EVENTO = {
-    titulo:    "Revelación de Género · Marisol & Andrés Felipe",
-    descripcion:"¿Niña o Niño? Acompáñanos en este momento tan especial.",
-    lugar:     "Bosque Popular El Prado",
     // 14 de junio de 2026, 3:00 PM hora Colombia (UTC-5)
-    inicio:    new Date("2026-06-14T15:00:00-05:00"),
-    duracionHoras: 4,
-    whatsapp:  "573213971526"
+    inicio:   new Date("2026-06-14T15:00:00-05:00"),
+    whatsapp: "573213971526"
 };
 
 const REDUCED_MOTION = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
@@ -28,57 +24,69 @@ function entrar(){
     }, REDUCED_MOTION ? 0 : 500);
 }
 
-/* ---------- CONFIRMAR (WhatsApp) ---------- */
-function confirmar(){
-    const mensaje = `Hola 👋✨
+/* ---------- MODAL CONFIRMAR ---------- */
+const modal = document.getElementById("modal");
+
+function abrirModal(){
+    modal.classList.add("open");
+    modal.setAttribute("aria-hidden", "false");
+    setTimeout(()=> document.getElementById("fNombre")?.focus(), 100);
+    document.body.style.overflow = "hidden";
+}
+
+function cerrarModal(){
+    modal.classList.remove("open");
+    modal.setAttribute("aria-hidden", "true");
+    document.body.style.overflow = "";
+}
+
+/* Cerrar modal con ESC */
+document.addEventListener("keydown", (e)=>{
+    if(e.key === "Escape" && modal.classList.contains("open")){
+        cerrarModal();
+    }
+});
+
+/* ---------- ENVIAR CONFIRMACIÓN ---------- */
+function enviarConfirmacion(e){
+    e.preventDefault();
+    const form = e.target;
+
+    const nombre   = form.nombre.value.trim();
+    const personas = parseInt(form.personas.value, 10) || 1;
+    const voto     = form.voto.value;
+
+    if(!nombre || !voto){
+        mostrarToast("Por favor completa todos los campos");
+        return;
+    }
+
+    const emojiVoto = voto === "Niño" ? "🩵" : "🩷";
+    const sufijoPersonas = personas === 1 ? "persona" : "personas";
+
+    const mensaje =
+`Hola 👋✨
 
 Confirmo mi asistencia a la revelación de género 🩷💙
+
+👤 ${nombre}
+👥 ${personas} ${sufijoPersonas}
+🔮 Mi predicción: ${voto} ${emojiVoto}
 
 📅 14 de junio de 2026
 ⏰ 3:00 PM
 
-Será un gusto acompañarlos 🤍`;
+¡Será un gusto acompañarlos! 🤍`;
 
-    mostrarToast("Abriendo WhatsApp…");
+    // Confeti + cierre + WhatsApp
+    lanzarConfeti();
+    cerrarModal();
+    mostrarToast("¡Confirmado! Abriendo WhatsApp…");
 
     const url = "https://api.whatsapp.com/send?phone=" + EVENTO.whatsapp +
                 "&text=" + encodeURIComponent(mensaje);
 
-    setTimeout(()=>{ window.open(url, "_blank", "noopener"); }, 400);
-}
-
-/* ---------- AGREGAR AL CALENDARIO (.ics) ---------- */
-function agregarCalendario(){
-    const fmt = (d)=> d.toISOString().replace(/[-:]|\.\d{3}/g, "");
-
-    const fin = new Date(EVENTO.inicio.getTime() + EVENTO.duracionHoras*60*60*1000);
-
-    const ics = [
-        "BEGIN:VCALENDAR",
-        "VERSION:2.0",
-        "PRODID:-//Revelacion//ES",
-        "CALSCALE:GREGORIAN",
-        "BEGIN:VEVENT",
-        "UID:revelacion-" + Date.now() + "@local",
-        "DTSTAMP:" + fmt(new Date()),
-        "DTSTART:" + fmt(EVENTO.inicio),
-        "DTEND:"   + fmt(fin),
-        "SUMMARY:" + EVENTO.titulo,
-        "DESCRIPTION:" + EVENTO.descripcion,
-        "LOCATION:" + EVENTO.lugar,
-        "END:VEVENT",
-        "END:VCALENDAR"
-    ].join("\r\n");
-
-    const blob = new Blob([ics], { type: "text/calendar;charset=utf-8" });
-    const a    = document.createElement("a");
-    a.href     = URL.createObjectURL(blob);
-    a.download = "revelacion-genero.ics";
-    document.body.appendChild(a);
-    a.click();
-    setTimeout(()=>{ URL.revokeObjectURL(a.href); a.remove(); }, 1000);
-
-    mostrarToast("Evento descargado · ábrelo en tu calendario");
+    setTimeout(()=>{ window.open(url, "_blank", "noopener"); }, 1200);
 }
 
 /* ---------- TOAST ---------- */
@@ -92,11 +100,36 @@ function mostrarToast(texto, duracion = 2500){
     toastTimer = setTimeout(()=> t.classList.remove("show"), duracion);
 }
 
+/* ---------- CONFETI ---------- */
+function lanzarConfeti(){
+    if(REDUCED_MOTION) return;
+    const cont = document.getElementById("confetti");
+    if(!cont) return;
+
+    const colores = ["#fed0d6", "#d5eef1", "#B59E7D", "#F1EADA", "#CEC1A8", "#b46476", "#5a8a93"];
+    const total = 70;
+
+    for(let i = 0; i < total; i++){
+        const p = document.createElement("div");
+        p.className = "confetti-piece";
+        p.style.left = Math.random() * 100 + "vw";
+        p.style.background = colores[Math.floor(Math.random() * colores.length)];
+        p.style.width  = (6 + Math.random() * 6) + "px";
+        p.style.height = (10 + Math.random() * 10) + "px";
+        p.style.animationDuration = (2 + Math.random() * 1.5) + "s";
+        p.style.animationDelay    = (Math.random() * 0.3) + "s";
+        p.style.transform = `rotate(${Math.random()*360}deg)`;
+        cont.appendChild(p);
+        setTimeout(()=> p.remove(), 4000);
+    }
+}
+
 /* ---------- COUNTDOWN ---------- */
 const cdEls = {
     days:  document.getElementById("cdDays"),
     hours: document.getElementById("cdHours"),
     mins:  document.getElementById("cdMins"),
+    secs:  document.getElementById("cdSecs"),
     cont:  document.getElementById("countdown")
 };
 
@@ -109,19 +142,22 @@ function actualizarCountdown(){
         cdEls.days.textContent  = "0";
         cdEls.hours.textContent = "0";
         cdEls.mins.textContent  = "0";
+        cdEls.secs.textContent  = "0";
         return;
     }
 
     const d = Math.floor(diff / (1000*60*60*24));
     const h = Math.floor((diff / (1000*60*60)) % 24);
     const m = Math.floor((diff / (1000*60)) % 60);
+    const s = Math.floor((diff / 1000) % 60);
 
     cdEls.days.textContent  = d;
     cdEls.hours.textContent = h;
     cdEls.mins.textContent  = m;
+    cdEls.secs.textContent  = s;
 }
 actualizarCountdown();
-setInterval(actualizarCountdown, 30000); // cada 30s
+setInterval(actualizarCountdown, 1000); // cada segundo
 
 /* ---------- ANIMACIÓN BIBERONES (fondo) ---------- */
 const bg = document.getElementById("cardBg");
@@ -143,8 +179,8 @@ function crearTetero(){
     div.appendChild(img);
 
     const size = 20 + Math.random()*30;
-    div.style.width = size + "px";
-    div.style.left  = Math.random()*bg.offsetWidth + "px";
+    div.style.width   = size + "px";
+    div.style.left    = Math.random()*bg.offsetWidth + "px";
     div.style.opacity = 0.2 + Math.random()*0.4;
 
     let y   = -60;
@@ -181,7 +217,6 @@ function pararAnimacion(){
     intervalo = null;
 }
 
-/* Pausa cuando la pestaña no está visible (batería + perf) */
 document.addEventListener("visibilitychange", ()=>{
     if(document.hidden) pararAnimacion();
     else arrancarAnimacion();

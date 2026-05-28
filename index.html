@@ -74,6 +74,8 @@
                     <div class="cd-item"><span class="cd-num" id="cdHours">--</span><span class="cd-lbl">hrs</span></div>
                     <div class="cd-sep">·</div>
                     <div class="cd-item"><span class="cd-num" id="cdMins">--</span><span class="cd-lbl">min</span></div>
+                    <div class="cd-sep">·</div>
+                    <div class="cd-item"><span class="cd-num" id="cdSecs">--</span><span class="cd-lbl">seg</span></div>
                 </div>
 
                 <div class="extra-box reveal" style="--d:.6s">
@@ -88,12 +90,14 @@
 
                         <div class="dinamica">
 
-                            <div class="opcion">
-                                <p>Si crees que será <span class="titulo">Niño</span>,<br>trae pañitos</p>
+                            <div class="opcion opcion--boy">
+                                <span class="titulo">Niño</span>
+                                <p>Si crees que será, trae <strong>pañitos</strong></p>
                             </div>
 
-                            <div class="opcion">
-                                <p>Si crees que será <span class="titulo">Niña</span>,<br>trae pañales</p>
+                            <div class="opcion opcion--girl">
+                                <span class="titulo">Niña</span>
+                                <p>Si crees que será, trae <strong>pañales</strong></p>
                             </div>
 
                         </div>
@@ -102,11 +106,8 @@
                 </div>
 
                 <div class="actions reveal" style="--d:.7s">
-                    <button class="btn btn-primary" type="button" onclick="confirmar()" aria-label="Confirmar asistencia por WhatsApp">
+                    <button class="btn btn-primary" type="button" onclick="abrirModal()" aria-label="Confirmar asistencia">
                         Confirmar asistencia
-                    </button>
-                    <button class="btn btn-ghost" type="button" onclick="agregarCalendario()" aria-label="Agregar evento al calendario">
-                        Agregar al calendario
                     </button>
                 </div>
 
@@ -114,6 +115,52 @@
         </article>
 
     </main>
+
+    <!-- MODAL CONFIRMAR -->
+    <div id="modal" class="modal" role="dialog" aria-modal="true" aria-labelledby="modalTitle" aria-hidden="true">
+        <div class="modal-backdrop" onclick="cerrarModal()"></div>
+        <div class="modal-card" role="document">
+
+            <button class="modal-close" type="button" onclick="cerrarModal()" aria-label="Cerrar">×</button>
+
+            <h3 id="modalTitle" class="modal-title">Cuéntanos quiénes van</h3>
+            <p class="modal-sub">Llena estos datos y enviamos tu confirmación por WhatsApp.</p>
+
+            <form id="formConfirmar" class="modal-form" onsubmit="enviarConfirmacion(event)" novalidate>
+
+                <label class="field">
+                    <span class="field-lbl">Tu nombre</span>
+                    <input type="text" name="nombre" id="fNombre" required autocomplete="name" placeholder="Ej. María Camila">
+                </label>
+
+                <label class="field">
+                    <span class="field-lbl">¿Cuántas personas van?</span>
+                    <input type="number" name="personas" id="fPersonas" required min="1" max="20" value="1">
+                </label>
+
+                <fieldset class="field vote">
+                    <legend class="field-lbl">Tu predicción</legend>
+                    <div class="vote-opts">
+                        <label class="vote-opt vote-opt--boy">
+                            <input type="radio" name="voto" value="Niño" required>
+                            <span>🩵 Niño</span>
+                        </label>
+                        <label class="vote-opt vote-opt--girl">
+                            <input type="radio" name="voto" value="Niña" required>
+                            <span>🩷 Niña</span>
+                        </label>
+                    </div>
+                </fieldset>
+
+                <button class="btn btn-primary modal-submit" type="submit">
+                    Enviar confirmación
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Confeti container -->
+    <div id="confetti" class="confetti" aria-hidden="true"></div>
 
     <!-- Toast de feedback -->
     <div id="toast" class="toast" role="status" aria-live="polite"></div>
