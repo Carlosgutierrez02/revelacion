@@ -4,11 +4,23 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="theme-color" content="#F1EADA">
+    <meta name="description" content="Marisol y Andrés Felipe te invitan a su revelación de género — 14 de junio de 2026, Bosque Popular El Prado.">
 
-    <title>Revelación de Género</title>
+    <title>Revelación de Género · Marisol & Andrés Felipe</title>
 
-    <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=Poppins:wght@300;400&display=swap"
+    <!-- Open Graph (preview en WhatsApp, redes) -->
+    <meta property="og:type" content="website">
+    <meta property="og:title" content="Revelación de Género · Marisol & Andrés Felipe">
+    <meta property="og:description" content="¿Niña o Niño? Acompáñanos el 14 de junio de 2026 en el Bosque Popular El Prado.">
+    <meta property="og:image" content="img/biberon.png">
+    <meta name="twitter:card" content="summary_large_image">
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=Poppins:wght@300;400;500&display=swap"
         rel="stylesheet">
+
     <link rel="stylesheet" href="styles.css">
     <link rel="shortcut icon" href="img/biberon.png" type="image/x-icon">
 </head>
@@ -16,46 +28,55 @@
 <body>
 
     <!-- INTRO -->
-    <div id="intro" class="intro">
+    <section id="intro" class="intro" aria-label="Bienvenida">
         <div class="intro-content">
-            <img src="img/biberon.png" class="bottle-intro">
+            <img src="img/biberon.png" alt="Biberón" class="bottle-intro">
             <h2>Tenemos algo muy especial para ti</h2>
-            <button class="intro-btn" onclick="entrar()">Descubrir invitación</button>
+            <button class="intro-btn" type="button" onclick="entrar()" aria-label="Descubrir invitación">
+                Descubrir invitación
+            </button>
         </div>
-    </div>
+    </section>
 
     <!-- MAIN -->
-    <div id="main" class="wrapper hidden">
+    <main id="main" class="wrapper hidden" aria-hidden="true">
 
-        <div class="card">
-            <div class="card-bg" id="cardBg"></div>
+        <article class="card">
+            <div class="card-bg" id="cardBg" aria-hidden="true"></div>
 
             <div class="content">
 
-                <div class="hosts">
+                <div class="hosts reveal" style="--d:.0s">
                     Marisol<br>&<br>Andres Felipe
                 </div>
 
-                <h1>Te invitan</h1>
+                <h1 class="reveal" style="--d:.1s">Te invitan</h1>
 
-                <div class="question">A descubrir… ¿ Niña o Niño ?</div>
+                <div class="question reveal" style="--d:.2s">A descubrir… ¿ Niña o Niño ?</div>
 
-                <div class="text">
+                <p class="text reveal" style="--d:.3s">
                     Hay momentos que transforman la vida…<br><br>
-
                     Un pequeño latido viene en camino,<br>
                     lleno de amor, ilusión y nuevos comienzos.<br><br>
-
                     Queremos que seas parte de este instante tan especial.
-                </div>
+                </p>
 
-                <div class="info">
+                <div class="info reveal" style="--d:.4s">
                     <strong>14 de junio de 2026</strong><br>
                     3:00 PM<br>
                     Bosque Popular El Prado
                 </div>
 
-                <div class="extra-box">
+                <!-- Cuenta regresiva -->
+                <div class="countdown reveal" id="countdown" style="--d:.5s" aria-live="polite">
+                    <div class="cd-item"><span class="cd-num" id="cdDays">--</span><span class="cd-lbl">días</span></div>
+                    <div class="cd-sep">·</div>
+                    <div class="cd-item"><span class="cd-num" id="cdHours">--</span><span class="cd-lbl">hrs</span></div>
+                    <div class="cd-sep">·</div>
+                    <div class="cd-item"><span class="cd-num" id="cdMins">--</span><span class="cd-lbl">min</span></div>
+                </div>
+
+                <div class="extra-box reveal" style="--d:.6s">
 
                     <div class="dress-card">
                         <strong>Código de vestimenta</strong>
@@ -65,7 +86,7 @@
                     <div class="extra">
                         Haz parte de esta experiencia<br><br>
 
-                        <div class="dimanica">
+                        <div class="dinamica">
 
                             <div class="opcion">
                                 <p>Si crees que será <span class="titulo">Niño</span>,<br>trae pañitos</p>
@@ -80,14 +101,31 @@
 
                 </div>
 
-                <button class="btn" onclick="confirmar()">
-                    Confirmar asistencia
-                </button>
+                <div class="actions reveal" style="--d:.7s">
+                    <button class="btn btn-primary" type="button" onclick="confirmar()" aria-label="Confirmar asistencia por WhatsApp">
+                        Confirmar asistencia
+                    </button>
+                    <button class="btn btn-ghost" type="button" onclick="agregarCalendario()" aria-label="Agregar evento al calendario">
+                        Agregar al calendario
+                    </button>
+                </div>
 
             </div>
-        </div>
+        </article>
 
-    </div>
+    </main>
+
+    <!-- Toast de feedback -->
+    <div id="toast" class="toast" role="status" aria-live="polite"></div>
+
+    <noscript>
+        <div class="noscript">
+            <strong>Marisol & Andrés Felipe te invitan</strong><br>
+            ¿Niña o Niño? · 14 de junio de 2026 · 3:00 PM<br>
+            Bosque Popular El Prado · Código: tonos claros, beige y habanos<br>
+            Confirma al WhatsApp +57 321 397 1526.
+        </div>
+    </noscript>
 
     <script src="script.js"></script>
 </body>
