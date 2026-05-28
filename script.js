@@ -106,7 +106,7 @@ function lanzarConfeti(){
     const cont = document.getElementById("confetti");
     if(!cont) return;
 
-    const colores = ["#fed0d6", "#d5eef1", "#B59E7D", "#F1EADA", "#CEC1A8", "#b46476", "#5a8a93"];
+    const colores = ["#FFB8C5", "#A8DAE0", "#C26B3A", "#E03E63", "#1E7A89", "#F4ECD8", "#E5D4B0"];
     const total = 70;
 
     for(let i = 0; i < total; i++){
