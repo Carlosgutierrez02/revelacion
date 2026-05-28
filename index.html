@@ -129,15 +129,24 @@
 
             <form id="formConfirmar" class="modal-form" onsubmit="enviarConfirmacion(event)" novalidate>
 
-                <label class="field">
-                    <span class="field-lbl">Tu nombre</span>
-                    <input type="text" name="nombre" id="fNombre" required autocomplete="name" placeholder="Ej. María Camila">
-                </label>
+                <div class="field">
+                    <div class="field-head">
+                        <span class="field-lbl">¿Quiénes van?</span>
+                        <span class="people-count" id="peopleCount">1 persona</span>
+                    </div>
 
-                <label class="field">
-                    <span class="field-lbl">¿Cuántas personas van?</span>
-                    <input type="number" name="personas" id="fPersonas" required min="1" max="20" value="1">
-                </label>
+                    <div class="people-list" id="peopleList">
+                        <div class="person-row">
+                            <span class="person-bullet">1</span>
+                            <input type="text" class="person-input" placeholder="Tu nombre" required autocomplete="name">
+                            <button type="button" class="person-remove" aria-label="Quitar" tabindex="-1">×</button>
+                        </div>
+                    </div>
+
+                    <button type="button" class="add-person" id="addPerson" onclick="agregarPersona()">
+                        <span class="add-person-ico">＋</span> Agregar acompañante
+                    </button>
+                </div>
 
                 <fieldset class="field vote">
                     <legend class="field-lbl">Tu predicción</legend>
