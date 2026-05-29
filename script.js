@@ -25,10 +25,13 @@ function entrar(){
     }, REDUCED_MOTION ? 0 : 500);
 }
 
-/* ---------- MODAL CONFIRMAR ---------- */
+/* ---------- MODAL ---------- */
 const modal = document.getElementById("modal");
 
 function abrirModal(){
+    if(peopleList.children.length === 0){
+        agregarPersona(true); // primera fila
+    }
     modal.classList.add("open");
     modal.setAttribute("aria-hidden", "false");
     setTimeout(()=> document.querySelector(".person-input")?.focus(), 100);
@@ -51,103 +54,223 @@ document.addEventListener("keydown", (e)=>{
 const peopleList  = document.getElementById("peopleList");
 const peopleCount = document.getElementById("peopleCount");
 const addBtn      = document.getElementById("addPerson");
+const scoreGirl   = document.getElementById("scoreGirl");
+const scoreBoy    = document.getElementById("scoreBoy");
+const progressBar = document.getElementById("progressBar");
+const progressMsg = document.getElementById("progressMsg");
+const progressBox = document.getElementById("progress");
 
-function actualizarContador(){
-    const rows = peopleList.querySelectorAll(".person-row:not(.removing)");
-    const n = rows.length;
-    peopleCount.textContent = n === 1 ? "1 persona" : `${n} personas`;
+const MENSAJES_PROGRESO = {
+    vacio:    "Escribe el primer nombre para empezar ✨",
+    parcial:  "Falta que cada persona elija su predicción 🩷🩵",
+    completo: "¡Listos! Envíanos tu confirmación 🎉"
+};
 
-    // Renumerar bullets
-    rows.forEach((r, i)=>{
-        const b = r.querySelector(".person-bullet");
-        if(b) b.textContent = i + 1;
-        const inp = r.querySelector(".person-input");
-        if(inp){
-            inp.placeholder = i === 0 ? "Tu nombre" : `Acompañante ${i}`;
-        }
-    });
-
-    // Habilitar/deshabilitar botón agregar
-    if(n >= MAX_PERSONAS){
-        addBtn.classList.add("disabled");
-    } else {
-        addBtn.classList.remove("disabled");
-    }
+function plantillaPersona(idx, primera){
+    const placeholder = idx === 1 ? "Tu nombre" : `Acompañante ${idx - 1}`;
+    return `
+        <div class="person-row-top">
+            <span class="person-bullet">${idx}</span>
+            <input type="text" class="person-input" placeholder="${placeholder}" required autocomplete="off">
+            <button type="button" class="person-remove" aria-label="Quitar" ${primera ? 'tabindex="-1"' : ''}>×</button>
+        </div>
+        <div class="person-vote disabled">
+            <button type="button" class="vote-pill vote-pill--boy"  data-vote="Niño">🩵 Team Niño</button>
+            <button type="button" class="vote-pill vote-pill--girl" data-vote="Niña">🩷 Team Niña</button>
+        </div>
+    `;
 }
 
-function agregarPersona(){
+function agregarPersona(esPrimera = false){
     const rows = peopleList.querySelectorAll(".person-row:not(.removing)");
     if(rows.length >= MAX_PERSONAS) return;
 
     const idx = rows.length + 1;
     const row = document.createElement("div");
     row.className = "person-row";
-    row.innerHTML = `
-        <span class="person-bullet">${idx}</span>
-        <input type="text" class="person-input" placeholder="Acompañante ${idx - 1}" required autocomplete="off">
-        <button type="button" class="person-remove" aria-label="Quitar">×</button>
-    `;
+    row.innerHTML = plantillaPersona(idx, esPrimera);
     peopleList.appendChild(row);
-    row.querySelector(".person-input").focus();
-    actualizarContador();
+
+    if(!esPrimera){
+        row.querySelector(".person-input").focus();
+    }
+    actualizar();
 }
 
-/* Delegación: quitar persona (cualquier × dentro de la lista) */
-peopleList.addEventListener("click", (e)=>{
-    const btn = e.target.closest(".person-remove");
-    if(!btn) return;
+/* Renumera, recalcula contador, scoreboard y progreso */
+function actualizar(){
+    const rows = peopleList.querySelectorAll(".person-row:not(.removing)");
+    const n = rows.length;
 
-    const row = btn.closest(".person-row");
-    const visibles = peopleList.querySelectorAll(".person-row:not(.removing)").length;
-    if(visibles <= 1) return; // siempre dejar al menos 1
+    peopleCount.textContent = n === 1 ? "1 persona" : `${n} personas`;
 
-    row.classList.add("removing");
-    setTimeout(()=>{
-        row.remove();
-        actualizarContador();
-    }, 250);
+    let nGirl = 0, nBoy = 0, completos = 0;
+
+    rows.forEach((r, i)=>{
+        // Renumerar bullet + placeholder
+        const b = r.querySelector(".person-bullet");
+        if(b) b.textContent = i + 1;
+        const inp = r.querySelector(".person-input");
+        if(inp){
+            inp.placeholder = i === 0 ? "Tu nombre" : `Acompañante ${i}`;
+        }
+
+        // Habilitar voto si hay nombre
+        const tieneNombre = inp && inp.value.trim().length > 0;
+        const voteBox = r.querySelector(".person-vote");
+        voteBox.classList.toggle("disabled", !tieneNombre);
+
+        // Contar votos
+        const voto = r.dataset.vote;
+        if(voto === "Niña") nGirl++;
+        else if(voto === "Niño") nBoy++;
+
+        if(tieneNombre && voto) completos++;
+    });
+
+    // Habilitar/deshabilitar botón agregar
+    addBtn.classList.toggle("disabled", n >= MAX_PERSONAS);
+
+    // Actualizar marcador con animación de "bump"
+    actualizarScore(scoreGirl, nGirl);
+    actualizarScore(scoreBoy,  nBoy);
+
+    // Barra de progreso
+    const pct = n === 0 ? 0 : Math.round((completos / n) * 100);
+    progressBar.style.setProperty("--p", pct + "%");
+    progressBox.classList.toggle("full", pct === 100 && n > 0);
+
+    if(n === 0 || (n === 1 && !rows[0].querySelector(".person-input").value.trim())){
+        progressMsg.textContent = MENSAJES_PROGRESO.vacio;
+    } else if(pct === 100){
+        progressMsg.textContent = MENSAJES_PROGRESO.completo;
+    } else {
+        progressMsg.textContent = MENSAJES_PROGRESO.parcial;
+    }
+}
+
+let scorePrev = { girl: 0, boy: 0 };
+function actualizarScore(el, n){
+    const prev = parseInt(el.textContent, 10) || 0;
+    el.textContent = n;
+    if(n !== prev){
+        el.classList.remove("bump");
+        // reflow para reiniciar animación
+        void el.offsetWidth;
+        el.classList.add("bump");
+        setTimeout(()=> el.classList.remove("bump"), 400);
+    }
+}
+
+/* ---------- DELEGACIÓN: input, voto, quitar ---------- */
+peopleList.addEventListener("input", (e)=>{
+    if(e.target.matches(".person-input")) actualizar();
 });
+
+peopleList.addEventListener("click", (e)=>{
+    const row = e.target.closest(".person-row");
+    if(!row) return;
+
+    // Quitar persona
+    if(e.target.closest(".person-remove")){
+        const visibles = peopleList.querySelectorAll(".person-row:not(.removing)").length;
+        if(visibles <= 1) return;
+        row.classList.add("removing");
+        setTimeout(()=>{ row.remove(); actualizar(); }, 250);
+        return;
+    }
+
+    // Voto
+    const pill = e.target.closest(".vote-pill");
+    if(pill){
+        const voteBox = pill.closest(".person-vote");
+        if(voteBox.classList.contains("disabled")) return;
+
+        const voto = pill.dataset.vote;
+        row.dataset.vote = voto;
+
+        // Marcar pill seleccionada
+        voteBox.querySelectorAll(".vote-pill").forEach(p => p.classList.remove("selected"));
+        pill.classList.add("selected");
+
+        // Chispitas
+        chispitas(pill, voto === "Niña" ? "#E03E63" : "#1E7A89");
+
+        actualizar();
+    }
+});
+
+/* ---------- CHISPITAS al votar ---------- */
+function chispitas(target, color){
+    if(REDUCED_MOTION) return;
+    const rect = target.getBoundingClientRect();
+    const host = target;
+    host.style.position = "relative"; // por si acaso
+
+    for(let i = 0; i < 8; i++){
+        const s = document.createElement("span");
+        s.className = "sparkle";
+        s.style.setProperty("--sc", color);
+        const ang = (Math.PI * 2 * i) / 8 + (Math.random() - 0.5) * 0.4;
+        const dist = 28 + Math.random() * 22;
+        s.style.setProperty("--dx", (Math.cos(ang) * dist) + "px");
+        s.style.setProperty("--dy", (Math.sin(ang) * dist - 8) + "px");
+        s.style.setProperty("--rot", (Math.random() * 360) + "deg");
+        host.appendChild(s);
+        setTimeout(()=> s.remove(), 1000);
+    }
+}
 
 /* ---------- ENVIAR CONFIRMACIÓN ---------- */
 function enviarConfirmacion(e){
     e.preventDefault();
 
-    // Recoger nombres
-    const inputs = peopleList.querySelectorAll(".person-input");
-    const nombres = Array.from(inputs)
-        .map(i => i.value.trim())
-        .filter(Boolean);
+    const rows = Array.from(peopleList.querySelectorAll(".person-row:not(.removing)"));
+    const datos = rows.map(r => ({
+        nombre: r.querySelector(".person-input").value.trim(),
+        voto:   r.dataset.vote || null
+    }));
 
-    if(nombres.length === 0){
-        mostrarToast("Escribe al menos un nombre", 2800, true);
-        inputs[0]?.focus();
+    // Validaciones
+    const sinNombre = datos.findIndex(d => !d.nombre);
+    if(sinNombre >= 0){
+        mostrarToast("Falta un nombre 🙊", 2800, true);
+        rows[sinNombre].querySelector(".person-input").focus();
+        return;
+    }
+    const sinVoto = datos.findIndex(d => !d.voto);
+    if(sinVoto >= 0){
+        const nombre = datos[sinVoto].nombre;
+        mostrarToast(`${nombre} aún no escoge su predicción 🤔`, 2800, true);
+        rows[sinVoto].querySelector(".vote-pill")?.focus();
         return;
     }
 
-    const voto = e.target.voto.value;
-    if(!voto){
-        mostrarToast("Falta tu predicción: ¿Niño o Niña?", 2800, true);
-        return;
-    }
+    const n = datos.length;
+    const nGirl = datos.filter(d => d.voto === "Niña").length;
+    const nBoy  = datos.filter(d => d.voto === "Niño").length;
 
-    const emojiVoto = voto === "Niño" ? "🩵" : "🩷";
-    const n = nombres.length;
-    const sufijo = n === 1 ? "persona" : "personas";
+    // Lista bonita: "Carlos Team Niña 🩷"
+    const lineas = datos.map(d => {
+        const emo = d.voto === "Niña" ? "🩷" : "🩵";
+        return `• ${d.nombre} — Team ${d.voto} ${emo}`;
+    }).join("\n");
 
-    // Lista bonita de nombres
-    const listaNombres = n === 1
-        ? `👤 ${nombres[0]}`
-        : `👥 Van ${n} ${sufijo}:\n` + nombres.map(x => `  • ${x}`).join("\n");
+    const encabezado = n === 1
+        ? "Confirmo mi asistencia"
+        : `Confirmamos nuestra asistencia (${n} personas)`;
+
+    const marcador = (nGirl > 0 && nBoy > 0)
+        ? `\n📊 Nuestro marcador:\n🩷 Niña: ${nGirl}  ·  🩵 Niño: ${nBoy}\n`
+        : "";
 
     const mensaje =
 `Hola 👋✨
 
-Confirmamos nuestra asistencia a la revelación de género 🩷💙
+${encabezado} a la revelación de género 🩷💙
 
-${listaNombres}
-
-🔮 Predicción: ${voto} ${emojiVoto}
-
+${lineas}
+${marcador}
 📅 14 de junio de 2026
 ⏰ 3:00 PM
 📍 Bosque Popular El Prado
@@ -186,15 +309,12 @@ function lanzarConfeti(){
     const cont = document.getElementById("confetti");
     if(!cont) return;
 
-    // Paleta suave: pasteles dominantes + un dorado/cobre como acento
     const paletaPasteles = [
-        "#FFB8C5", "#FFD3DC", "#FF9FB3",   // rosas
-        "#A8DAE0", "#C2E8ED", "#8FCFD8",   // azules
-        "#F4ECD8"                           // cream
+        "#FFB8C5", "#FFD3DC", "#FF9FB3",
+        "#A8DAE0", "#C2E8ED", "#8FCFD8",
+        "#F4ECD8"
     ];
-    const paletaAcentos = ["#FFD93D", "#FFC857", "#C26B3A"]; // dorado/cobre, dispersos
-
-    // 60% corazones, 30% puntos, 10% estrellas
+    const paletaAcentos = ["#FFD93D", "#FFC857", "#C26B3A"];
     const formas = [
         "heart","heart","heart","heart","heart","heart",
         "dot","dot","dot",
@@ -202,29 +322,27 @@ function lanzarConfeti(){
     ];
 
     const total = 110;
-
     for(let i = 0; i < total; i++){
         const esAcento = Math.random() < 0.18;
         const color = esAcento
             ? paletaAcentos[Math.floor(Math.random() * paletaAcentos.length)]
             : paletaPasteles[Math.floor(Math.random() * paletaPasteles.length)];
 
-        spawn(cont, color, formas, {
-            x:     Math.random() * 100,                 // vw
-            sway:  20 + Math.random() * 40,             // amplitud del vaivén
-            delay: Math.random() * 1.2,                 // entrada escalonada (no todos a la vez)
-            dur:   4 + Math.random() * 2.5,             // caída lenta y elegante
+        spawnConfetti(cont, color, formas, {
+            x:     Math.random() * 100,
+            sway:  20 + Math.random() * 40,
+            delay: Math.random() * 1.2,
+            dur:   4 + Math.random() * 2.5,
             size:  10 + Math.random() * 14
         });
     }
 }
 
-function spawn(cont, color, formas, opts){
+function spawnConfetti(cont, color, formas, opts){
     const forma = formas[Math.floor(Math.random() * formas.length)];
     const p = document.createElement("div");
     p.className = "confetti-piece " + forma;
 
-    // Estrellas un toque más pequeñas para no robar protagonismo
     const size = forma === "star" ? opts.size * 0.85 : opts.size;
 
     p.style.left   = opts.x + "vw";
@@ -254,22 +372,14 @@ function actualizarCountdown(){
 
     if(diff <= 0){
         cdEls.cont.classList.add("finished");
-        cdEls.days.textContent  = "0";
-        cdEls.hours.textContent = "0";
-        cdEls.mins.textContent  = "0";
-        cdEls.secs.textContent  = "0";
+        cdEls.days.textContent = cdEls.hours.textContent = cdEls.mins.textContent = cdEls.secs.textContent = "0";
         return;
     }
 
-    const d = Math.floor(diff / (1000*60*60*24));
-    const h = Math.floor((diff / (1000*60*60)) % 24);
-    const m = Math.floor((diff / (1000*60)) % 60);
-    const s = Math.floor((diff / 1000) % 60);
-
-    cdEls.days.textContent  = d;
-    cdEls.hours.textContent = h;
-    cdEls.mins.textContent  = m;
-    cdEls.secs.textContent  = s;
+    cdEls.days.textContent  = Math.floor(diff / (1000*60*60*24));
+    cdEls.hours.textContent = Math.floor((diff / (1000*60*60)) % 24);
+    cdEls.mins.textContent  = Math.floor((diff / (1000*60)) % 60);
+    cdEls.secs.textContent  = Math.floor((diff / 1000) % 60);
 }
 actualizarCountdown();
 setInterval(actualizarCountdown, 1000);
@@ -290,7 +400,6 @@ function crearTetero(){
     img.src = "img/biberon.png";
     img.alt = "";
     img.setAttribute("aria-hidden", "true");
-
     div.appendChild(img);
 
     const size = 20 + Math.random()*30;
@@ -310,7 +419,6 @@ function crearTetero(){
         y   += speed;
         rot += rotSpeed;
         div.style.transform = `translateY(${y}px) rotate(${rot}deg)`;
-
         if(y < bg.offsetHeight + 80){
             requestAnimationFrame(animar);
         }else{
@@ -339,5 +447,5 @@ document.addEventListener("visibilitychange", ()=>{
 
 arrancarAnimacion();
 
-/* Inicializar contador en load */
-actualizarContador();
+/* Render inicial */
+agregarPersona(true);

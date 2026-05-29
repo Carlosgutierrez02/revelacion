@@ -128,6 +128,25 @@
 
             <form id="formConfirmar" class="modal-form" onsubmit="enviarConfirmacion(event)" novalidate>
 
+                <!-- MARCADOR EN VIVO -->
+                <div class="scoreboard" id="scoreboard">
+                    <div class="score score--girl">
+                        <span class="score-emo">🩷</span>
+                        <div class="score-meta">
+                            <span class="score-lbl">Team Niña</span>
+                            <span class="score-num" id="scoreGirl">0</span>
+                        </div>
+                    </div>
+                    <div class="score-vs">vs</div>
+                    <div class="score score--boy">
+                        <span class="score-emo">🩵</span>
+                        <div class="score-meta">
+                            <span class="score-lbl">Team Niño</span>
+                            <span class="score-num" id="scoreBoy">0</span>
+                        </div>
+                    </div>
+                </div>
+
                 <div class="field">
                     <div class="field-head">
                         <span class="field-lbl">¿Quiénes van?</span>
@@ -135,11 +154,7 @@
                     </div>
 
                     <div class="people-list" id="peopleList">
-                        <div class="person-row">
-                            <span class="person-bullet">1</span>
-                            <input type="text" class="person-input" placeholder="Tu nombre" required autocomplete="name">
-                            <button type="button" class="person-remove" aria-label="Quitar" tabindex="-1">×</button>
-                        </div>
+                        <!-- las filas se renderizan desde JS -->
                     </div>
 
                     <button type="button" class="add-person" id="addPerson" onclick="agregarPersona()">
@@ -147,19 +162,11 @@
                     </button>
                 </div>
 
-                <fieldset class="field vote">
-                    <legend class="field-lbl">Tu predicción</legend>
-                    <div class="vote-opts">
-                        <label class="vote-opt vote-opt--boy">
-                            <input type="radio" name="voto" value="Niño" required>
-                            <span>🩵 Niño</span>
-                        </label>
-                        <label class="vote-opt vote-opt--girl">
-                            <input type="radio" name="voto" value="Niña" required>
-                            <span>🩷 Niña</span>
-                        </label>
-                    </div>
-                </fieldset>
+                <!-- BARRA DE PROGRESO -->
+                <div class="progress" id="progress">
+                    <div class="progress-bar" id="progressBar"></div>
+                    <div class="progress-msg" id="progressMsg">Escribe el primer nombre para empezar ✨</div>
+                </div>
 
                 <button class="btn btn-primary modal-submit" type="submit">
                     Enviar confirmación
