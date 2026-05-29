@@ -9,6 +9,9 @@ const EVENTO = {
     whatsapp: "573213971526"
 };
 
+/* Webhook de Google Sheets (Apps Script). Vacío = no se guarda en hoja. */
+const SHEETS_URL = "https://script.google.com/macros/s/AKfycbwx2nrbAPC543dOEHFbeI5sHc06wJtcrl-8crCHU9jLixeBqj2dVw9FU6nURPto87p77w/exec";
+
 const MAX_PERSONAS = 15;
 const REDUCED_MOTION = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
@@ -250,7 +253,7 @@ function enviarConfirmacion(e){
     const nGirl = datos.filter(d => d.voto === "Niña").length;
     const nBoy  = datos.filter(d => d.voto === "Niño").length;
 
-    // Lista bonita: "Carlos Team Niña 🩷"
+    // Lista bonita: "• Carlos — Team Niña 🩷"
     const lineas = datos.map(d => {
         const emo = d.voto === "Niña" ? "🩷" : "🩵";
         return `• ${d.nombre} — Team ${d.voto} ${emo}`;
@@ -277,6 +280,15 @@ ${marcador}
 
 ¡Será un gusto acompañarlos! 🤍`;
 
+    // Guardar en Google Sheets (fire-and-forget, no bloquea WhatsApp)
+    guardarEnSheets({
+        total:    n,
+        teamGirl: nGirl,
+        teamBoy:  nBoy,
+        detalle:  datos.map(d => `${d.nombre}: ${d.voto}`).join(" | "),
+        nombres:  datos.map(d => d.nombre).join(", ")
+    });
+
     // FX
     lanzarConfeti();
     document.querySelector(".card")?.classList.add("pop");
@@ -289,6 +301,24 @@ ${marcador}
                 "&text=" + encodeURIComponent(mensaje);
 
     setTimeout(()=>{ window.open(url, "_blank", "noopener"); }, 1400);
+}
+
+/* ---------- BACKEND: GOOGLE SHEETS ---------- */
+function guardarEnSheets(payload){
+    if(!SHEETS_URL) return;
+    try {
+        // text/plain evita preflight CORS; no-cors deja pasar el POST sin leer la respuesta.
+        fetch(SHEETS_URL, {
+            method:  "POST",
+            mode:    "no-cors",
+            headers: { "Content-Type": "text/plain;charset=utf-8" },
+            body:    JSON.stringify(payload),
+            keepalive: true  // por si la pestaña se cierra antes de terminar
+        });
+    } catch (err) {
+        // Silencioso. WhatsApp es el respaldo principal.
+        console.warn("[Sheets] no se pudo registrar:", err);
+    }
 }
 
 /* ---------- TOAST ---------- */
