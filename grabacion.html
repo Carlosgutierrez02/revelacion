@@ -715,12 +715,6 @@
             if (event.key.toLowerCase() === "f") document.documentElement.requestFullscreen?.();
         });
 
-        const params = new URLSearchParams(window.location.search);
-        const previewScene = Number(params.get("scene"));
-        if (Number.isInteger(previewScene) && previewScene >= 0 && previewScene < scenes.length) {
-            activateScene(previewScene);
-        }
-
         addAtmosphere();
         setupCursor();
         requestAnimationFrame(animate);
