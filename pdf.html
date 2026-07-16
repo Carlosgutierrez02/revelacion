@@ -1,0 +1,286 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Invitación Baby Shower Neithan</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=Montserrat:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        @page {
+            size: A4 portrait;
+            margin: 0;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            -webkit-print-color-adjust: exact;
+            print-color-adjust: exact;
+        }
+
+        :root {
+            --yellow: #f8d94a;
+            --soft-yellow: #fff2a8;
+            --cream: #fffaf0;
+            --silver: #b9b8bd;
+            --ink: #2f2930;
+            --brown: #4a2918;
+            --muted: #716b72;
+            --white: #ffffff;
+        }
+
+        body {
+            min-height: 100vh;
+            display: grid;
+            place-items: center;
+            background: #e9e4d8;
+            font-family: "Montserrat", Arial, sans-serif;
+            color: var(--ink);
+        }
+
+        .sheet {
+            position: relative;
+            width: 210mm;
+            height: 297mm;
+            overflow: hidden;
+            background:
+                radial-gradient(circle at 18% 10%, rgba(248, 217, 74, 0.48), transparent 42mm),
+                radial-gradient(circle at 92% 18%, rgba(185, 184, 189, 0.34), transparent 40mm),
+                linear-gradient(180deg, #fffdf8 0%, #fff4d6 48%, #ffffff 100%);
+            isolation: isolate;
+        }
+
+        .sheet::before {
+            content: "";
+            position: absolute;
+            inset: 9mm;
+            border: 1px solid rgba(185, 184, 189, 0.55);
+            border-radius: 12mm;
+            pointer-events: none;
+        }
+
+        .sheet::after {
+            content: "";
+            position: absolute;
+            inset: 14mm;
+            border: 1px dashed rgba(185, 184, 189, 0.42);
+            border-radius: 9mm;
+            pointer-events: none;
+        }
+
+        .balloon {
+            position: absolute;
+            width: var(--s);
+            height: calc(var(--s) * 1.15);
+            border-radius: 50%;
+            background: var(--c);
+            opacity: 0.9;
+            box-shadow: inset -5mm -7mm 8mm rgba(0, 0, 0, 0.08);
+        }
+
+        .balloon:nth-child(1) { --s: 24mm; --c: var(--yellow); left: 12mm; top: 18mm; }
+        .balloon:nth-child(2) { --s: 18mm; --c: var(--white); left: 30mm; top: 11mm; }
+        .balloon:nth-child(3) { --s: 20mm; --c: var(--silver); left: 48mm; top: 20mm; }
+        .balloon:nth-child(4) { --s: 25mm; --c: var(--soft-yellow); right: 15mm; top: 18mm; }
+        .balloon:nth-child(5) { --s: 18mm; --c: var(--white); right: 38mm; top: 12mm; }
+        .balloon:nth-child(6) { --s: 17mm; --c: var(--silver); right: 55mm; top: 24mm; }
+
+        .content {
+            position: relative;
+            z-index: 2;
+            height: 100%;
+            display: grid;
+            grid-template-rows: auto 1fr auto;
+            padding: 24mm 20mm 18mm;
+            text-align: center;
+        }
+
+        .eyebrow {
+            margin-top: 7mm;
+            color: var(--muted);
+            font-size: 9pt;
+            font-weight: 800;
+            letter-spacing: 0.18em;
+            text-transform: uppercase;
+        }
+
+        h1 {
+            margin-top: 3mm;
+            color: var(--brown);
+            font-family: "DM Serif Display", Georgia, serif;
+            font-size: 55pt;
+            font-weight: 400;
+            line-height: 0.9;
+        }
+
+        .subtitle {
+            width: max-content;
+            margin: 4mm auto 0;
+            padding: 2.5mm 7mm;
+            border-radius: 999px;
+            border: 1px solid rgba(185, 184, 189, 0.55);
+            background: rgba(255, 255, 255, 0.75);
+            color: var(--brown);
+            font-family: "DM Serif Display", Georgia, serif;
+            font-size: 18pt;
+        }
+
+        .message {
+            max-width: 138mm;
+            margin: 8mm auto 0;
+            color: #5e5962;
+            font-size: 11.2pt;
+            line-height: 1.58;
+        }
+
+        .hero-art {
+            align-self: center;
+            display: grid;
+            justify-items: center;
+            margin-top: -2mm;
+        }
+
+        .elephant {
+            width: 122mm;
+            filter: drop-shadow(0 10mm 10mm rgba(74, 41, 24, 0.16));
+        }
+
+        .date-band {
+            width: 145mm;
+            display: grid;
+            grid-template-columns: 35mm 1fr;
+            align-items: center;
+            gap: 8mm;
+            margin: -2mm auto 0;
+            padding: 5mm 7mm;
+            border-radius: 8mm;
+            border: 1px solid rgba(185, 184, 189, 0.5);
+            background: rgba(255, 255, 255, 0.82);
+        }
+
+        .day {
+            display: grid;
+            justify-items: center;
+            padding-right: 7mm;
+            border-right: 1px solid rgba(185, 184, 189, 0.5);
+        }
+
+        .day span {
+            color: var(--muted);
+            font-size: 7.5pt;
+            font-weight: 800;
+            letter-spacing: 0.18em;
+            text-transform: uppercase;
+        }
+
+        .day strong {
+            color: var(--brown);
+            font-family: "DM Serif Display", Georgia, serif;
+            font-size: 44pt;
+            line-height: 0.86;
+        }
+
+        .details {
+            display: grid;
+            gap: 2mm;
+            text-align: left;
+        }
+
+        .details p {
+            color: var(--muted);
+            font-size: 8pt;
+            font-weight: 800;
+            letter-spacing: 0.14em;
+            text-transform: uppercase;
+        }
+
+        .details strong {
+            color: var(--ink);
+            font-size: 12pt;
+            line-height: 1.35;
+        }
+
+        .footer {
+            display: grid;
+            gap: 5mm;
+            margin-top: 7mm;
+        }
+
+        .gift-note {
+            max-width: 150mm;
+            margin: 0 auto;
+            padding: 5mm 7mm;
+            border-radius: 7mm;
+            background: rgba(255, 242, 168, 0.5);
+            border: 1px solid rgba(185, 184, 189, 0.42);
+            color: #5e5962;
+            font-size: 10pt;
+            line-height: 1.45;
+        }
+
+        .confirm {
+            color: var(--brown);
+            font-size: 9.5pt;
+            font-weight: 800;
+            letter-spacing: 0.12em;
+            text-transform: uppercase;
+        }
+
+        @media screen {
+            .sheet {
+                box-shadow: 0 24px 80px rgba(47, 41, 48, 0.25);
+            }
+        }
+    </style>
+</head>
+<body>
+    <main class="sheet" aria-label="Invitación Baby Shower Neithan">
+        <div aria-hidden="true">
+            <span class="balloon"></span>
+            <span class="balloon"></span>
+            <span class="balloon"></span>
+            <span class="balloon"></span>
+            <span class="balloon"></span>
+            <span class="balloon"></span>
+        </div>
+
+        <section class="content">
+            <header>
+                <p class="eyebrow">Acompáñanos a celebrar</p>
+                <h1>NEITHAN</h1>
+                <p class="subtitle">Baby Shower</p>
+                <p class="message">
+                    Hay momentos que se guardan para siempre en el corazón. Nuestro pequeño Neithan viene en camino
+                    y queremos rodearlo de amor, bendiciones y sonrisas desde antes de tenerlo en brazos.
+                </p>
+            </header>
+
+            <div class="hero-art">
+                <img class="elephant" src="img/elefante-nube.png" alt="Elefante tierno parado sobre una nube">
+                <div class="date-band">
+                    <div class="day">
+                        <span>Agosto</span>
+                        <strong>16</strong>
+                        <span>2026</span>
+                    </div>
+                    <div class="details">
+                        <p>Domingo | 2:00 PM</p>
+                        <strong>Salón de eventos Iglesia Morrogacho</strong>
+                    </div>
+                </div>
+            </div>
+
+            <footer class="footer">
+                <p class="gift-note">
+                    Tu presencia es el regalo más bonito. Si nace de tu corazón traer un detalle,
+                    será recibido con mucho cariño; lo importante es compartir este momento juntos.
+                </p>
+                <p class="confirm">Confirma tu asistencia y celebra con nosotros su llegada</p>
+            </footer>
+        </section>
+    </main>
+</body>
+</html>
