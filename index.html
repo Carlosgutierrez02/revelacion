@@ -4,44 +4,56 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="theme-color" content="#f8d94a">
-    <meta name="description" content="Invitacion Baby Shower - 16 de agosto de 2026, 2:00 PM, Salon de eventos Iglesia Morrogacho.">
+    <meta name="description" content="Invitación Baby Shower - 16 de agosto de 2026, 2:00 PM, Salón de eventos Iglesia Morrogacho.">
     <title>Baby Shower | 16 de agosto</title>
     <meta property="og:type" content="website">
     <meta property="og:title" content="Baby Shower | 16 de agosto">
-    <meta property="og:description" content="Celebremos juntos la dulce espera. 2:00 PM en el Salon de eventos Iglesia Morrogacho.">
-    <meta property="og:image" content="img/elefante-baby.svg">
+    <meta property="og:description" content="Celebremos juntos la dulce espera. 2:00 PM en el Salón de eventos Iglesia Morrogacho.">
+    <meta property="og:image" content="img/elefante-baby-v2.png">
     <meta name="twitter:card" content="summary_large_image">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=Montserrat:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="styles.css">
-    <link rel="icon" href="img/elefante-baby.svg" type="image/svg+xml">
+    <link rel="icon" href="img/elefante-baby-v2.png" type="image/png">
 </head>
 <body>
-    <section id="intro" class="intro" aria-label="Portada de la invitacion">
+    <div class="scroll-progress" id="scrollProgress" aria-hidden="true"></div>
+    <section id="intro" class="intro" aria-label="Portada de la invitación">
         <div class="intro__balloons" aria-hidden="true">
             <span></span><span></span><span></span><span></span><span></span>
         </div>
-        <img class="intro__elephant" src="img/elefante-baby.svg" alt="">
-        <p class="eyebrow">Una celebracion muy especial</p>
+        <div class="intro__sparkles" aria-hidden="true"></div>
+        <img class="intro__elephant" src="img/elefante-baby-v2.png" alt="">
+        <p class="eyebrow">Una celebración muy especial</p>
         <h1>Baby Shower</h1>
-        <p class="intro__text">Hay un bebe en camino y queremos compartir esta alegria contigo.</p>
-        <button class="button button--primary" type="button" id="openInvitation">Abrir invitacion</button>
+        <p class="intro__text">Acompáñanos a celebrar la dulce espera de NEITHAN, un pequeño regalo que ya llena nuestros corazones de ilusión.</p>
+        <button class="button button--primary" type="button" id="openInvitation">Abrir invitación</button>
     </section>
 
     <main id="invitation" class="page is-hidden" aria-hidden="true">
-        <section class="hero" aria-labelledby="heroTitle">
+        <nav class="section-dots" aria-label="Navegación por secciones">
+            <a href="#inicio" aria-label="Inicio"></a>
+            <a href="#cuenta" aria-label="Cuenta regresiva"></a>
+            <a href="#detalles" aria-label="Detalles"></a>
+            <a href="#regalos" aria-label="Regalos"></a>
+            <a href="#confirmar" aria-label="Confirmar asistencia"></a>
+        </nav>
+
+        <section id="inicio" class="hero" aria-labelledby="heroTitle">
+            <div class="sky-pieces" aria-hidden="true"></div>
             <div class="balloon-arch" aria-hidden="true">
                 <span></span><span></span><span></span><span></span><span></span>
                 <span></span><span></span><span></span><span></span><span></span>
                 <span></span><span></span><span></span><span></span><span></span>
             </div>
-            <div class="hero__content">
-                <p class="eyebrow">Acompananos a celebrar</p>
-                <h2 id="heroTitle">Baby Shower</h2>
+            <div class="hero__content" data-reveal>
+                <p class="eyebrow">Acompáñanos a celebrar</p>
+                <h2 id="heroTitle">NEITHAN</h2>
+                <p class="name-note">Baby Shower</p>
                 <p class="hero__message">
-                    Un pequeno amor esta por llegar. Entre detalles dulces, globos amarillos y mucha ternura,
-                    queremos vivir este momento contigo.
+                    Hay momentos que se guardan para siempre en el corazón. Nuestro pequeño Neithan viene en camino
+                    y queremos rodearlo de amor, bendiciones y sonrisas desde antes de tenerlo en brazos.
                 </p>
                 <div class="date-card" aria-label="Fecha y hora del evento">
                     <span class="date-card__month">Agosto</span>
@@ -51,20 +63,18 @@
                 <div class="hero__actions">
                     <a class="button button--primary" id="confirmTop" href="#">Confirmar asistencia</a>
                     <a class="button button--ghost" href="#detalles">Ver detalles</a>
+                    <button class="button button--ghost print-button" type="button" id="printPdf">Guardar PDF</button>
                 </div>
             </div>
-            <div class="hero__scene" aria-label="Ilustracion de elefante para baby shower">
-                <img class="elephant" src="img/elefante-baby.svg" alt="Elefante tierno levantando la trompa">
-                <div class="dessert-table" aria-hidden="true">
-                    <span></span><span></span><span></span><span></span>
-                </div>
+            <div class="hero__scene" aria-label="Ilustración de elefante para baby shower" data-reveal>
+                <img class="elephant elephant--cloud" src="img/elefante-nube.png" alt="Elefante tierno parado sobre una nube">
             </div>
         </section>
 
-        <section class="countdown-section" aria-label="Cuenta regresiva">
+        <section id="cuenta" class="countdown-section" aria-label="Cuenta regresiva" data-reveal>
             <p>Faltan</p>
             <div class="countdown" id="countdown">
-                <div><strong id="days">--</strong><span>Dias</span></div>
+                <div><strong id="days">--</strong><span>Días</span></div>
                 <div><strong id="hours">--</strong><span>Horas</span></div>
                 <div><strong id="minutes">--</strong><span>Min</span></div>
                 <div><strong id="seconds">--</strong><span>Seg</span></div>
@@ -73,51 +83,59 @@
 
         <section id="detalles" class="details" aria-labelledby="detailsTitle">
             <div class="section-heading">
-                <p class="eyebrow">Detalles del dia</p>
-                <h2 id="detailsTitle">Nos encantaria verte alli</h2>
+                <p class="eyebrow">Detalles del día</p>
+                <h2 id="detailsTitle">Un día para llenarlo de amor</h2>
             </div>
-            <div class="detail-grid">
-                <article class="detail-card">
-                    <span class="detail-card__icon">16</span>
-                    <h3>Fecha</h3>
-                    <p>Domingo, 16 de agosto de 2026</p>
-                </article>
-                <article class="detail-card">
-                    <span class="detail-card__icon">2</span>
-                    <h3>Hora</h3>
-                    <p>2:00 PM</p>
-                </article>
-                <article class="detail-card">
-                    <span class="detail-card__icon">M</span>
-                    <h3>Lugar</h3>
-                    <p>Salon de eventos Iglesia Morrogacho</p>
-                </article>
+            <div class="event-pass" data-reveal>
+                <div class="event-pass__date">
+                    <span>Domingo</span>
+                    <strong>16</strong>
+                    <span>Agosto 2026</span>
+                </div>
+                <div class="event-pass__body">
+                    <p class="event-pass__label">Baby Shower de</p>
+                    <h3>Neithan</h3>
+                    <p class="event-pass__copy">
+                        Acompáñanos a compartir una tarde llena de ternura, detalles dulces y buenos deseos
+                        para recibir con amor a nuestro príncipe.
+                    </p>
+                    <div class="detail-list">
+                        <div>
+                            <span>Hora</span>
+                            <strong>2:00 PM</strong>
+                        </div>
+                        <div>
+                            <span>Lugar</span>
+                            <strong>Salón de eventos Iglesia Morrogacho</strong>
+                        </div>
+                    </div>
+                </div>
             </div>
         </section>
 
-        <section class="gift-section" aria-labelledby="giftTitle">
+        <section id="regalos" class="gift-section" aria-labelledby="giftTitle" data-reveal>
             <div class="gift-copy">
                 <p class="eyebrow">Con amor</p>
-                <h2 id="giftTitle">Lluvia de regalos</h2>
+                <h2 id="giftTitle">Un detalle para Neithan</h2>
                 <p>
-                    Tu presencia es el regalo mas bonito. Si deseas traer un detalle para el bebe,
-                    puedes elegir algo util para sus primeros dias.
+                    Tu presencia es el regalo más bonito. Si nace de tu corazón traer un detalle,
+                    será recibido con mucho cariño; lo importante es compartir este momento juntos.
                 </p>
             </div>
-            <div class="gift-list" aria-label="Ideas de regalos">
-                <span>Panales</span>
-                <span>Panitos humedos</span>
-                <span>Ropita</span>
-                <span>Articulos de aseo</span>
+            <div class="gift-list gift-list--open" aria-label="Ideas abiertas para regalos">
+                <span>Algo hecho con amor</span>
+                <span>Un detalle útil</span>
+                <span>Un recuerdo especial</span>
+                <span>Lo que tu corazón elija</span>
             </div>
         </section>
 
-        <section class="rsvp" aria-labelledby="rsvpTitle">
-            <img src="img/elefante-baby.svg" alt="" aria-hidden="true">
+        <section id="confirmar" class="rsvp" aria-labelledby="rsvpTitle" data-reveal>
+            <img src="img/elefante-baby-v2.png" alt="" aria-hidden="true">
             <div>
                 <p class="eyebrow">Reserva la fecha</p>
                 <h2 id="rsvpTitle">Confirma tu asistencia</h2>
-                <p>Ayudanos a preparar cada detalle de este dia tan especial.</p>
+                <p>Ayúdanos a preparar cada detalle para recibir a Neithan con mucho amor.</p>
             </div>
             <a class="button button--primary" id="confirmBottom" href="#">Confirmar por WhatsApp</a>
         </section>
