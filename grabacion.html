@@ -400,77 +400,6 @@
             background: linear-gradient(90deg, var(--yellow), var(--silver), var(--peach));
         }
 
-        .baby-cursor,
-        .cursor-dot {
-            position: fixed;
-            left: 0;
-            top: 0;
-            z-index: 100;
-            pointer-events: none;
-            transform: translate(-50%, -50%);
-            opacity: 0;
-            transition: opacity 0.18s ease;
-        }
-
-        .baby-cursor.is-visible,
-        .cursor-dot.is-visible {
-            opacity: 1;
-        }
-
-        .baby-cursor {
-            width: 42px;
-            height: 42px;
-            border-radius: 50% 50% 48% 48%;
-            background:
-                radial-gradient(circle at 34% 26%, rgba(255,255,255,0.95), transparent 16%),
-                linear-gradient(135deg, var(--yellow), var(--lemon));
-            box-shadow: 0 10px 26px rgba(201, 171, 28, 0.28);
-            mix-blend-mode: normal;
-        }
-
-        .baby-cursor::after {
-            content: "";
-            position: absolute;
-            left: 50%;
-            bottom: -16px;
-            width: 2px;
-            height: 18px;
-            background: rgba(74, 41, 24, 0.35);
-            transform: translateX(-50%);
-        }
-
-        .baby-cursor::before {
-            content: "";
-            position: absolute;
-            left: 50%;
-            bottom: -21px;
-            width: 12px;
-            height: 10px;
-            border: 2px solid rgba(74, 41, 24, 0.35);
-            border-top: 0;
-            border-radius: 0 0 10px 10px;
-            transform: translateX(-50%);
-        }
-
-        .cursor-dot {
-            width: 8px;
-            height: 8px;
-            border-radius: 50%;
-            background: var(--brown);
-        }
-
-        .trail {
-            position: fixed;
-            z-index: 90;
-            width: 12px;
-            height: 12px;
-            border-radius: 50%;
-            pointer-events: none;
-            background: radial-gradient(circle, rgba(248,217,74,0.95), transparent 70%);
-            transform: translate(-50%, -50%);
-            animation: trail 0.8s ease-out forwards;
-        }
-
         @keyframes balloonBob {
             0%, 100% { transform: translateY(0) rotate(-2deg); }
             50% { transform: translateY(-22px) rotate(2deg); }
@@ -504,10 +433,6 @@
         @keyframes pillDance {
             0%, 100% { transform: translateY(0) rotate(0deg); }
             50% { transform: translateY(-10px) rotate(1deg); }
-        }
-
-        @keyframes trail {
-            to { opacity: 0; transform: translate(-50%, -50%) scale(2.4); }
         }
 
         @media (max-aspect-ratio: 4 / 3) {
@@ -602,19 +527,13 @@
         <div class="timeline" aria-hidden="true"><span id="progress"></span></div>
     </main>
 
-    <div class="baby-cursor" id="babyCursor" aria-hidden="true"></div>
-    <div class="cursor-dot" id="cursorDot" aria-hidden="true"></div>
-
     <script>
         const stage = document.querySelector(".stage");
         const scenes = Array.from(document.querySelectorAll(".scene"));
         const progress = document.getElementById("progress");
-        const babyCursor = document.getElementById("babyCursor");
-        const cursorDot = document.getElementById("cursorDot");
         const sceneDuration = 7600;
         let sceneIndex = 0;
         let startedAt = performance.now();
-        let lastTrail = 0;
 
         const balloons = [
             ["5vw", "10vh", "86px", "#f8d94a", "5.6s"],
@@ -684,30 +603,6 @@
             requestAnimationFrame(animate);
         }
 
-        function setupCursor() {
-            window.addEventListener("pointermove", (event) => {
-                const x = `${event.clientX}px`;
-                const y = `${event.clientY}px`;
-                babyCursor.style.left = x;
-                babyCursor.style.top = y;
-                cursorDot.style.left = x;
-                cursorDot.style.top = y;
-                babyCursor.classList.add("is-visible");
-                cursorDot.classList.add("is-visible");
-
-                const now = performance.now();
-                if (now - lastTrail < 42) return;
-                lastTrail = now;
-
-                const trail = document.createElement("span");
-                trail.className = "trail";
-                trail.style.left = x;
-                trail.style.top = y;
-                document.body.appendChild(trail);
-                window.setTimeout(() => trail.remove(), 820);
-            }, { passive: true });
-        }
-
         window.addEventListener("keydown", (event) => {
             if (event.key === "ArrowRight") activateScene(sceneIndex + 1);
             if (event.key === "ArrowLeft") activateScene(sceneIndex - 1);
@@ -716,7 +611,6 @@
         });
 
         addAtmosphere();
-        setupCursor();
         requestAnimationFrame(animate);
     </script>
 </body>
