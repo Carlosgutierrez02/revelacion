@@ -1,0 +1,729 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Grabación Baby Shower Neithan</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=Montserrat:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --yellow: #f8d94a;
+            --lemon: #fff2a8;
+            --cream: #fffdf3;
+            --white: #ffffff;
+            --silver: #b9b8bd;
+            --ink: #211e25;
+            --brown: #4a2918;
+            --muted: #706b72;
+            --peach: #ffb899;
+        }
+
+        * { box-sizing: border-box; }
+
+        html,
+        body {
+            width: 100%;
+            height: 100%;
+            margin: 0;
+            overflow: hidden;
+            cursor: none;
+            background: #fff8dc;
+            color: var(--ink);
+            font-family: "Montserrat", Arial, sans-serif;
+        }
+
+        body::before {
+            content: "";
+            position: fixed;
+            inset: 0;
+            z-index: 0;
+            background:
+                radial-gradient(circle at 16% 18%, rgba(248, 217, 74, 0.34), transparent 22vw),
+                radial-gradient(circle at 82% 12%, rgba(185, 184, 189, 0.24), transparent 18vw),
+                radial-gradient(circle at 80% 84%, rgba(255, 184, 153, 0.2), transparent 18vw),
+                linear-gradient(135deg, #eff8ff 0%, #fff8d8 46%, #fffdf3 100%);
+        }
+
+        .stage {
+            position: relative;
+            z-index: 1;
+            width: 100vw;
+            height: 100vh;
+            aspect-ratio: 16 / 9;
+            overflow: hidden;
+            isolation: isolate;
+        }
+
+        .stage::before {
+            content: "";
+            position: absolute;
+            inset: 0;
+            z-index: 0;
+            background-image:
+                linear-gradient(rgba(255, 255, 255, 0.34) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(255, 255, 255, 0.34) 1px, transparent 1px);
+            background-size: 64px 64px;
+            mask-image: linear-gradient(to bottom, rgba(0,0,0,0.42), transparent 82%);
+            pointer-events: none;
+        }
+
+        .scene {
+            position: absolute;
+            inset: 0;
+            z-index: 10;
+            display: grid;
+            grid-template-columns: 0.95fr 1.05fr;
+            align-items: center;
+            gap: clamp(24px, 4vw, 76px);
+            padding: clamp(34px, 5vw, 82px);
+            opacity: 0;
+            transform: scale(1.04);
+            transition: opacity 1.1s ease, transform 1.1s ease;
+            pointer-events: none;
+        }
+
+        .scene.is-active {
+            opacity: 1;
+            transform: scale(1);
+            pointer-events: auto;
+        }
+
+        .scene:first-of-type {
+            opacity: 1;
+            transform: scale(1);
+        }
+
+        .scene:first-of-type:not(.is-active) {
+            opacity: 0;
+            transform: scale(1.04);
+        }
+
+        .copy {
+            position: relative;
+            z-index: 30;
+            max-width: 780px;
+            transform: translateY(0);
+            opacity: 1;
+        }
+
+        .scene.is-active .copy {
+            transform: translateY(0);
+            opacity: 1;
+        }
+
+        .eyebrow {
+            margin: 0 0 18px;
+            color: var(--muted);
+            font-size: clamp(0.78rem, 1.1vw, 1rem);
+            font-weight: 800;
+            letter-spacing: 0.18em;
+            text-transform: uppercase;
+        }
+
+        h1,
+        h2,
+        .date-number {
+            margin: 0;
+            font-family: "DM Serif Display", Georgia, serif;
+            font-weight: 400;
+            letter-spacing: 0;
+            line-height: 0.88;
+            color: var(--brown);
+        }
+
+        h1 {
+            font-size: clamp(6rem, 13vw, 15rem);
+        }
+
+        h2 {
+            font-size: clamp(4.2rem, 8vw, 9rem);
+        }
+
+        .sub {
+            display: inline-flex;
+            align-items: center;
+            min-height: 54px;
+            margin-top: 22px;
+            padding: 10px 24px;
+            border: 1px solid rgba(185, 184, 189, 0.55);
+            border-radius: 999px;
+            background: linear-gradient(135deg, rgba(248, 217, 74, 0.96), rgba(255, 242, 168, 0.94));
+            box-shadow: 0 18px 42px rgba(72, 63, 38, 0.12);
+            color: #4a2918 !important;
+            font-family: "DM Serif Display", Georgia, serif;
+            font-size: clamp(1.6rem, 2.8vw, 3rem);
+            font-weight: 700;
+            text-shadow: 0 1px 0 rgba(255, 255, 255, 0.5);
+        }
+
+        .message {
+            max-width: 690px;
+            margin: 26px 0 0;
+            color: #514b55;
+            font-size: clamp(1.05rem, 1.45vw, 1.5rem);
+            line-height: 1.65;
+        }
+
+        .visual {
+            position: relative;
+            z-index: 20;
+            display: grid;
+            place-items: center;
+            min-height: 68vh;
+        }
+
+        .elephant-cloud {
+            width: min(47vw, 760px);
+            filter: drop-shadow(0 30px 34px rgba(74, 41, 24, 0.18));
+            animation: floatCloud 5.8s ease-in-out infinite;
+        }
+
+        .elephant-sit {
+            width: min(30vw, 470px);
+            filter: drop-shadow(0 30px 34px rgba(74, 41, 24, 0.18));
+            animation: breathe 5s ease-in-out infinite;
+        }
+
+        .crib {
+            width: min(45vw, 760px);
+            border: 1px solid rgba(185, 184, 189, 0.45);
+            border-radius: 24px;
+            box-shadow: 0 34px 90px rgba(91, 75, 30, 0.2);
+            animation: photoFloat 7s ease-in-out infinite;
+        }
+
+        .date-wrap {
+            position: relative;
+            z-index: 35;
+            display: grid;
+            grid-template-columns: auto 1fr;
+            gap: 34px;
+            align-items: center;
+            margin-top: 28px;
+        }
+
+        .date-number {
+            display: grid;
+            place-items: center;
+            width: clamp(190px, 18vw, 280px);
+            aspect-ratio: 1;
+            border-radius: 50%;
+            background:
+                radial-gradient(circle at 34% 26%, rgba(255,255,255,0.95), transparent 22%),
+                linear-gradient(135deg, var(--yellow), var(--lemon));
+            box-shadow: 0 28px 64px rgba(201, 171, 28, 0.28);
+            font-size: clamp(7rem, 12vw, 13rem);
+        }
+
+        .date-info {
+            position: relative;
+            z-index: 36;
+            display: grid;
+            gap: 14px;
+            color: var(--ink);
+            font-size: clamp(1.2rem, 2vw, 2.2rem);
+            font-weight: 800;
+        }
+
+        .date-info span {
+            color: var(--muted);
+            font-size: 0.58em;
+            letter-spacing: 0.14em;
+            text-transform: uppercase;
+        }
+
+        .detail-card {
+            position: relative;
+            z-index: 35;
+            display: grid;
+            gap: 12px;
+            width: min(650px, 90%);
+            padding: 34px;
+            border: 1px solid rgba(185, 184, 189, 0.5);
+            border-radius: 22px;
+            background:
+                linear-gradient(135deg, rgba(255,255,255,0.82), rgba(255,242,168,0.78)),
+                radial-gradient(circle at 86% 18%, rgba(185,184,189,0.28), transparent 14rem);
+            box-shadow: 0 28px 74px rgba(58, 54, 61, 0.14);
+        }
+
+        .detail-card strong {
+            color: var(--brown);
+            font-family: "DM Serif Display", Georgia, serif;
+            font-size: clamp(2.2rem, 4vw, 4.6rem);
+            font-weight: 400;
+            line-height: 0.95;
+        }
+
+        .detail-card span {
+            color: var(--muted);
+            font-size: clamp(0.88rem, 1.2vw, 1rem);
+            font-weight: 800;
+            letter-spacing: 0.14em;
+            text-transform: uppercase;
+        }
+
+        .gift-cloud {
+            position: relative;
+            z-index: 35;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 14px;
+            max-width: 720px;
+            margin-top: 30px;
+        }
+
+        .gift-cloud span {
+            min-height: 58px;
+            display: inline-flex;
+            align-items: center;
+            padding: 12px 22px;
+            border: 1px solid rgba(185, 184, 189, 0.48);
+            border-radius: 999px;
+            background: rgba(255, 255, 255, 0.78);
+            box-shadow: 0 14px 30px rgba(63, 60, 67, 0.1);
+            color: var(--brown);
+            font-family: "DM Serif Display", Georgia, serif;
+            font-size: clamp(1.1rem, 1.6vw, 1.55rem);
+            animation: pillDance 5s ease-in-out infinite;
+        }
+
+        .gift-cloud span:nth-child(2) { animation-delay: -1s; }
+        .gift-cloud span:nth-child(3) { animation-delay: -2s; }
+        .gift-cloud span:nth-child(4) { animation-delay: -3s; }
+
+        .final-card {
+            position: relative;
+            z-index: 35;
+            display: grid;
+            gap: 18px;
+            padding: clamp(34px, 4vw, 56px);
+            border: 1px solid rgba(185, 184, 189, 0.52);
+            border-radius: 28px;
+            background: rgba(255, 255, 255, 0.78);
+            box-shadow: 0 30px 82px rgba(58, 54, 61, 0.15);
+        }
+
+        .final-card h2 {
+            font-size: clamp(4rem, 7vw, 8.5rem);
+        }
+
+        .balloon,
+        .spark,
+        .cloud {
+            position: absolute;
+            pointer-events: none;
+        }
+
+        .balloon {
+            z-index: 2;
+            width: var(--s);
+            aspect-ratio: 1 / 1.16;
+            left: var(--x);
+            top: var(--y);
+            border-radius: 50%;
+            background:
+                radial-gradient(circle at 32% 24%, rgba(255,255,255,0.9), transparent 16%),
+                var(--c);
+            box-shadow: inset -14px -18px 24px rgba(0,0,0,0.1), 0 14px 30px rgba(58,54,61,0.12);
+            animation: balloonBob var(--d) ease-in-out infinite;
+        }
+
+        .spark {
+            z-index: 3;
+            width: var(--s);
+            height: var(--s);
+            left: var(--x);
+            top: var(--y);
+            background: var(--c);
+            clip-path: polygon(50% 0, 61% 38%, 100% 50%, 61% 62%, 50% 100%, 39% 62%, 0 50%, 39% 38%);
+            opacity: 0;
+            filter: drop-shadow(0 0 12px rgba(248, 217, 74, 0.5));
+            animation: sparkle var(--d) ease-in-out infinite;
+        }
+
+        .cloud {
+            z-index: 1;
+            width: var(--w);
+            height: calc(var(--w) * 0.28);
+            left: var(--x);
+            top: var(--y);
+            border-radius: 999px;
+            background: rgba(255,255,255,0.74);
+            filter: blur(0.2px);
+            animation: cloudDrift var(--d) ease-in-out infinite;
+        }
+
+        .cloud::before,
+        .cloud::after {
+            content: "";
+            position: absolute;
+            bottom: 18%;
+            border-radius: 50%;
+            background: inherit;
+        }
+
+        .cloud::before {
+            left: 12%;
+            width: 34%;
+            aspect-ratio: 1;
+        }
+
+        .cloud::after {
+            right: 18%;
+            width: 42%;
+            aspect-ratio: 1;
+        }
+
+        .timeline {
+            position: fixed;
+            left: 50%;
+            bottom: 22px;
+            z-index: 20;
+            display: none;
+            width: min(430px, 38vw);
+            height: 6px;
+            overflow: hidden;
+            transform: translateX(-50%);
+            border-radius: 999px;
+            background: rgba(255,255,255,0.58);
+            box-shadow: inset 0 0 0 1px rgba(185,184,189,0.36);
+        }
+
+        .timeline span {
+            display: block;
+            width: var(--progress, 0%);
+            height: 100%;
+            border-radius: inherit;
+            background: linear-gradient(90deg, var(--yellow), var(--silver), var(--peach));
+        }
+
+        .baby-cursor,
+        .cursor-dot {
+            position: fixed;
+            left: 0;
+            top: 0;
+            z-index: 100;
+            pointer-events: none;
+            transform: translate(-50%, -50%);
+            opacity: 0;
+            transition: opacity 0.18s ease;
+        }
+
+        .baby-cursor.is-visible,
+        .cursor-dot.is-visible {
+            opacity: 1;
+        }
+
+        .baby-cursor {
+            width: 42px;
+            height: 42px;
+            border-radius: 50% 50% 48% 48%;
+            background:
+                radial-gradient(circle at 34% 26%, rgba(255,255,255,0.95), transparent 16%),
+                linear-gradient(135deg, var(--yellow), var(--lemon));
+            box-shadow: 0 10px 26px rgba(201, 171, 28, 0.28);
+            mix-blend-mode: normal;
+        }
+
+        .baby-cursor::after {
+            content: "";
+            position: absolute;
+            left: 50%;
+            bottom: -16px;
+            width: 2px;
+            height: 18px;
+            background: rgba(74, 41, 24, 0.35);
+            transform: translateX(-50%);
+        }
+
+        .baby-cursor::before {
+            content: "";
+            position: absolute;
+            left: 50%;
+            bottom: -21px;
+            width: 12px;
+            height: 10px;
+            border: 2px solid rgba(74, 41, 24, 0.35);
+            border-top: 0;
+            border-radius: 0 0 10px 10px;
+            transform: translateX(-50%);
+        }
+
+        .cursor-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: var(--brown);
+        }
+
+        .trail {
+            position: fixed;
+            z-index: 90;
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            pointer-events: none;
+            background: radial-gradient(circle, rgba(248,217,74,0.95), transparent 70%);
+            transform: translate(-50%, -50%);
+            animation: trail 0.8s ease-out forwards;
+        }
+
+        @keyframes balloonBob {
+            0%, 100% { transform: translateY(0) rotate(-2deg); }
+            50% { transform: translateY(-22px) rotate(2deg); }
+        }
+
+        @keyframes sparkle {
+            0%, 100% { opacity: 0; transform: scale(0.55) rotate(0deg); }
+            42%, 62% { opacity: 1; transform: scale(1) rotate(22deg); }
+        }
+
+        @keyframes cloudDrift {
+            0%, 100% { transform: translateX(0); }
+            50% { transform: translateX(34px); }
+        }
+
+        @keyframes floatCloud {
+            0%, 100% { transform: translateY(0) rotate(-1deg); }
+            50% { transform: translateY(-26px) rotate(1deg); }
+        }
+
+        @keyframes breathe {
+            0%, 100% { transform: translateY(0) scale(1); }
+            50% { transform: translateY(-12px) scale(1.02); }
+        }
+
+        @keyframes photoFloat {
+            0%, 100% { transform: translateY(0) rotate(-1deg); }
+            50% { transform: translateY(-14px) rotate(1deg); }
+        }
+
+        @keyframes pillDance {
+            0%, 100% { transform: translateY(0) rotate(0deg); }
+            50% { transform: translateY(-10px) rotate(1deg); }
+        }
+
+        @keyframes trail {
+            to { opacity: 0; transform: translate(-50%, -50%) scale(2.4); }
+        }
+
+        @media (max-aspect-ratio: 4 / 3) {
+            .scene {
+                grid-template-columns: 1fr;
+                align-content: center;
+                text-align: center;
+            }
+
+            .copy {
+                justify-self: center;
+            }
+
+            .visual {
+                min-height: 30vh;
+            }
+
+            .elephant-cloud,
+            .crib {
+                width: min(72vw, 620px);
+            }
+
+            .elephant-sit {
+                width: min(42vw, 390px);
+            }
+        }
+    </style>
+</head>
+<body>
+    <main class="stage" aria-label="Invitación animada horizontal para grabar">
+        <section class="scene is-active">
+            <div class="copy">
+                <p class="eyebrow">Acompáñanos a celebrar</p>
+                <h1>NEITHAN</h1>
+                <div class="sub">Baby Shower</div>
+                <p class="message">Un pequeño milagro viene en camino, y queremos recibirlo rodeado de amor, ternura y sonrisas.</p>
+            </div>
+            <div class="visual">
+                <img class="elephant-cloud" src="img/elefante-nube.png" alt="Elefante tierno sobre una nube">
+            </div>
+        </section>
+
+        <section class="scene">
+            <div class="copy">
+                <p class="eyebrow">Reserva esta fecha</p>
+                <h2>Domingo</h2>
+                <div class="date-wrap">
+                    <div class="date-number">16</div>
+                    <div class="date-info">
+                        <span>Agosto 2026</span>
+                        2:00 PM
+                    </div>
+                </div>
+            </div>
+            <div class="visual">
+                <div class="detail-card">
+                    <span>Lugar</span>
+                    <strong>Salón de eventos Iglesia Morrogacho</strong>
+                    <p class="message">Una tarde especial para compartir la alegría de esperar a Neithan.</p>
+                </div>
+            </div>
+        </section>
+
+        <section class="scene">
+            <div class="copy">
+                <p class="eyebrow">Con mucho cariño</p>
+                <h2>Tu presencia es el regalo más bonito</h2>
+                <p class="message">Si nace de tu corazón traer un detalle, será recibido con gratitud. Lo importante es celebrar juntos este momento.</p>
+                <div class="gift-cloud">
+                    <span>Algo hecho con amor</span>
+                    <span>Un detalle útil</span>
+                    <span>Un recuerdo especial</span>
+                    <span>Lo que tu corazón elija</span>
+                </div>
+            </div>
+            <div class="visual">
+                <img class="crib" src="img/cuna-neithan.png" alt="Cuna decorada para Neithan">
+            </div>
+        </section>
+
+        <section class="scene">
+            <div class="copy final-card">
+                <p class="eyebrow">Te esperamos</p>
+                <h2>Será una alegría verte allí</h2>
+                <p class="message">Domingo 16 de agosto de 2026 · 2:00 PM · Salón de eventos Iglesia Morrogacho</p>
+            </div>
+            <div class="visual">
+                <img class="elephant-sit" src="img/elefante-baby-v2.png" alt="Elefante de baby shower">
+            </div>
+        </section>
+
+        <div class="timeline" aria-hidden="true"><span id="progress"></span></div>
+    </main>
+
+    <div class="baby-cursor" id="babyCursor" aria-hidden="true"></div>
+    <div class="cursor-dot" id="cursorDot" aria-hidden="true"></div>
+
+    <script>
+        const stage = document.querySelector(".stage");
+        const scenes = Array.from(document.querySelectorAll(".scene"));
+        const progress = document.getElementById("progress");
+        const babyCursor = document.getElementById("babyCursor");
+        const cursorDot = document.getElementById("cursorDot");
+        const sceneDuration = 7600;
+        let sceneIndex = 0;
+        let startedAt = performance.now();
+        let lastTrail = 0;
+
+        const balloons = [
+            ["5vw", "10vh", "86px", "#f8d94a", "5.6s"],
+            ["11vw", "5vh", "62px", "#ffffff", "6.1s"],
+            ["18vw", "12vh", "74px", "#b9b8bd", "5.4s"],
+            ["86vw", "8vh", "96px", "#fff2a8", "6.3s"],
+            ["78vw", "5vh", "64px", "#ffffff", "5.9s"],
+            ["92vw", "62vh", "82px", "#f8d94a", "6.8s"],
+            ["7vw", "72vh", "72px", "#ffffff", "5.7s"]
+        ];
+
+        const clouds = [
+            ["2vw", "82vh", "210px", "8s"],
+            ["70vw", "8vh", "180px", "9s"],
+            ["78vw", "84vh", "260px", "10s"]
+        ];
+
+        function addAtmosphere() {
+            balloons.forEach(([x, y, s, c, d]) => {
+                const item = document.createElement("span");
+                item.className = "balloon";
+                item.style.setProperty("--x", x);
+                item.style.setProperty("--y", y);
+                item.style.setProperty("--s", s);
+                item.style.setProperty("--c", c);
+                item.style.setProperty("--d", d);
+                stage.appendChild(item);
+            });
+
+            clouds.forEach(([x, y, w, d]) => {
+                const item = document.createElement("span");
+                item.className = "cloud";
+                item.style.setProperty("--x", x);
+                item.style.setProperty("--y", y);
+                item.style.setProperty("--w", w);
+                item.style.setProperty("--d", d);
+                stage.appendChild(item);
+            });
+
+            for (let i = 0; i < 42; i += 1) {
+                const item = document.createElement("span");
+                item.className = "spark";
+                item.style.setProperty("--x", `${Math.random() * 100}vw`);
+                item.style.setProperty("--y", `${Math.random() * 100}vh`);
+                item.style.setProperty("--s", `${8 + Math.random() * 15}px`);
+                item.style.setProperty("--c", Math.random() > 0.38 ? "#f8d94a" : "#b9b8bd");
+                item.style.setProperty("--d", `${2.6 + Math.random() * 4.2}s`);
+                item.style.animationDelay = `${Math.random() * -5}s`;
+                stage.appendChild(item);
+            }
+        }
+
+        function activateScene(index) {
+            sceneIndex = (index + scenes.length) % scenes.length;
+            scenes.forEach((scene, itemIndex) => {
+                scene.classList.toggle("is-active", itemIndex === sceneIndex);
+            });
+            startedAt = performance.now();
+        }
+
+        function animate(now) {
+            const elapsed = now - startedAt;
+            const percent = Math.min(100, (elapsed / sceneDuration) * 100);
+            progress.style.setProperty("--progress", `${percent}%`);
+
+            if (elapsed >= sceneDuration) activateScene(sceneIndex + 1);
+            requestAnimationFrame(animate);
+        }
+
+        function setupCursor() {
+            window.addEventListener("pointermove", (event) => {
+                const x = `${event.clientX}px`;
+                const y = `${event.clientY}px`;
+                babyCursor.style.left = x;
+                babyCursor.style.top = y;
+                cursorDot.style.left = x;
+                cursorDot.style.top = y;
+                babyCursor.classList.add("is-visible");
+                cursorDot.classList.add("is-visible");
+
+                const now = performance.now();
+                if (now - lastTrail < 42) return;
+                lastTrail = now;
+
+                const trail = document.createElement("span");
+                trail.className = "trail";
+                trail.style.left = x;
+                trail.style.top = y;
+                document.body.appendChild(trail);
+                window.setTimeout(() => trail.remove(), 820);
+            }, { passive: true });
+        }
+
+        window.addEventListener("keydown", (event) => {
+            if (event.key === "ArrowRight") activateScene(sceneIndex + 1);
+            if (event.key === "ArrowLeft") activateScene(sceneIndex - 1);
+            if (event.key.toLowerCase() === "r") activateScene(0);
+            if (event.key.toLowerCase() === "f") document.documentElement.requestFullscreen?.();
+        });
+
+        const params = new URLSearchParams(window.location.search);
+        const previewScene = Number(params.get("scene"));
+        if (Number.isInteger(previewScene) && previewScene >= 0 && previewScene < scenes.length) {
+            activateScene(previewScene);
+        }
+
+        addAtmosphere();
+        setupCursor();
+        requestAnimationFrame(animate);
+    </script>
+</body>
+</html>

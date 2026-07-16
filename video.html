@@ -1,0 +1,401 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Video Baby Shower Neithan</title>
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            min-height: 100vh;
+            margin: 0;
+            display: grid;
+            place-items: center;
+            background: #1f1d23;
+            font-family: Georgia, serif;
+        }
+
+        canvas {
+            width: min(100vw, 420px);
+            aspect-ratio: 9 / 16;
+            border-radius: 24px;
+            box-shadow: 0 28px 80px rgba(0, 0, 0, 0.45);
+            background: #fffdf3;
+        }
+
+        .hint {
+            position: fixed;
+            left: 50%;
+            bottom: 18px;
+            transform: translateX(-50%);
+            color: #fff;
+            font: 600 13px Arial, sans-serif;
+            opacity: 0.78;
+        }
+    </style>
+</head>
+<body>
+    <canvas id="stage" width="1080" height="1920" aria-label="Video animado Baby Shower Neithan"></canvas>
+    <div class="hint" id="hint">Renderizando video...</div>
+
+    <script>
+        const canvas = document.getElementById("stage");
+        const ctx = canvas.getContext("2d");
+        const hint = document.getElementById("hint");
+        const W = canvas.width;
+        const H = canvas.height;
+        const FPS = 30;
+        const DURATION = 18;
+        const TOTAL_FRAMES = FPS * DURATION;
+        const renderMode = new URLSearchParams(location.search).has("render");
+
+        const palette = {
+            ink: "#2f2930",
+            brown: "#4a2918",
+            muted: "#716b72",
+            yellow: "#f8d94a",
+            softYellow: "#fff2a8",
+            cream: "#fffaf0",
+            silver: "#b9b8bd",
+            white: "#ffffff",
+            peach: "#ffb899"
+        };
+
+        const assets = {
+            elephantCloud: loadImage("img/elefante-nube.png"),
+            elephantSit: loadImage("img/elefante-baby-v2.png"),
+            crib: loadImage("img/cuna-neithan.png")
+        };
+
+        function loadImage(src) {
+            return new Promise((resolve, reject) => {
+                const img = new Image();
+                img.onload = () => resolve(img);
+                img.onerror = reject;
+                img.src = src;
+            });
+        }
+
+        const easeOut = (x) => 1 - Math.pow(1 - x, 3);
+        const easeInOut = (x) => x < 0.5 ? 4 * x * x * x : 1 - Math.pow(-2 * x + 2, 3) / 2;
+        const clamp01 = (x) => Math.max(0, Math.min(1, x));
+        const local = (time, start, end) => clamp01((time - start) / (end - start));
+        const lerp = (a, b, t) => a + (b - a) * t;
+
+        function roundedRect(x, y, w, h, r) {
+            ctx.beginPath();
+            ctx.moveTo(x + r, y);
+            ctx.arcTo(x + w, y, x + w, y + h, r);
+            ctx.arcTo(x + w, y + h, x, y + h, r);
+            ctx.arcTo(x, y + h, x, y, r);
+            ctx.arcTo(x, y, x + w, y, r);
+            ctx.closePath();
+        }
+
+        function fillTextFit(text, x, y, maxWidth, fontSize, fontFamily, color, weight = "400", align = "center") {
+            let size = fontSize;
+            do {
+                ctx.font = `${weight} ${size}px ${fontFamily}`;
+                if (ctx.measureText(text).width <= maxWidth) break;
+                size -= 4;
+            } while (size > 24);
+            ctx.fillStyle = color;
+            ctx.textAlign = align;
+            ctx.textBaseline = "middle";
+            ctx.fillText(text, x, y);
+        }
+
+        function drawBackground(time) {
+            const g = ctx.createLinearGradient(0, 0, 0, H);
+            g.addColorStop(0, "#eef8ff");
+            g.addColorStop(0.48, "#fff6d9");
+            g.addColorStop(1, "#ffffff");
+            ctx.fillStyle = g;
+            ctx.fillRect(0, 0, W, H);
+
+            for (let i = 0; i < 22; i++) {
+                const x = (i * 157 + Math.sin(time * 0.4 + i) * 28) % W;
+                const y = (i * 223 + time * 18) % H;
+                const r = 3 + (i % 4) * 2;
+                ctx.globalAlpha = 0.16 + (i % 5) * 0.05;
+                ctx.fillStyle = i % 3 === 0 ? palette.yellow : palette.white;
+                ctx.beginPath();
+                ctx.arc(x, y, r, 0, Math.PI * 2);
+                ctx.fill();
+            }
+            ctx.globalAlpha = 1;
+        }
+
+        function drawBalloons(time, alpha = 1) {
+            const list = [
+                [96, 180, 98, palette.yellow],
+                [184, 118, 75, palette.white],
+                [286, 170, 78, palette.silver],
+                [900, 160, 105, palette.softYellow],
+                [790, 112, 72, palette.white],
+                [705, 174, 70, palette.silver],
+                [86, 1390, 84, palette.white],
+                [982, 1360, 92, palette.yellow]
+            ];
+            for (const [x, y, r, c] of list) {
+                const bob = Math.sin(time * 1.1 + x) * 13;
+                ctx.globalAlpha = alpha;
+                const grad = ctx.createRadialGradient(x - r * 0.24, y + bob - r * 0.32, r * 0.1, x, y + bob, r);
+                grad.addColorStop(0, "#ffffff");
+                grad.addColorStop(0.22, c);
+                grad.addColorStop(1, c === palette.silver ? "#96959b" : c);
+                ctx.fillStyle = grad;
+                ctx.beginPath();
+                ctx.ellipse(x, y + bob, r * 0.82, r, 0, 0, Math.PI * 2);
+                ctx.fill();
+            }
+            ctx.globalAlpha = 1;
+        }
+
+        function drawClouds(time) {
+            ctx.globalAlpha = 0.58;
+            ctx.fillStyle = "#ffffff";
+            const groups = [
+                [120, 1430, 120],
+                [875, 410, 96],
+                [132, 620, 75]
+            ];
+            for (const [x, y, s] of groups) {
+                const drift = Math.sin(time * 0.45 + x) * 16;
+                for (let i = 0; i < 4; i++) {
+                    ctx.beginPath();
+                    ctx.ellipse(x + drift + i * s * 0.42, y + Math.sin(i) * 12, s * (0.42 + i * 0.04), s * 0.28, 0, 0, Math.PI * 2);
+                    ctx.fill();
+                }
+            }
+            ctx.globalAlpha = 1;
+        }
+
+        function drawTitleScene(time) {
+            const p = easeOut(local(time, 0, 2.3));
+            const float = Math.sin(time * 2.1) * 18;
+            drawBalloons(time, 0.92);
+            drawClouds(time);
+
+            ctx.globalAlpha = p;
+            fillTextFit("ACOMPÁÑANOS A CELEBRAR", W / 2, 210 - (1 - p) * 30, 720, 36, "Arial", palette.muted, "800");
+            fillTextFit("NEITHAN", W / 2, 335 - (1 - p) * 40, 900, 138, "Georgia", palette.brown);
+
+            roundedRect(W / 2 - 190, 430, 380, 72, 36);
+            ctx.fillStyle = "rgba(255,255,255,0.78)";
+            ctx.fill();
+            ctx.strokeStyle = "rgba(185,184,189,0.58)";
+            ctx.lineWidth = 3;
+            ctx.stroke();
+            fillTextFit("Baby Shower", W / 2, 466, 340, 44, "Georgia", palette.brown);
+
+            drawImageContain(assetsResolved.elephantCloud, W / 2 - 350, 650 + float, 700, 610);
+
+            ctx.globalAlpha = p;
+            wrapText("Hay momentos que se guardan para siempre en el corazón. Nuestro pequeño Neithan viene en camino.", W / 2, 1395, 790, 40, 52, palette.ink);
+            ctx.globalAlpha = 1;
+        }
+
+        function drawDateScene(time) {
+            const p = easeInOut(local(time, 4.1, 6.2));
+            drawBalloons(time, 0.55);
+            drawClouds(time);
+            ctx.globalAlpha = p;
+
+            fillTextFit("DOMINGO", W / 2, 255, 700, 42, "Arial", palette.muted, "800");
+            fillTextFit("16", W / 2, 470, 600, 250, "Georgia", palette.brown);
+            fillTextFit("AGOSTO 2026", W / 2, 640, 740, 50, "Arial", palette.muted, "800");
+
+            roundedRect(170, 760, 740, 220, 48);
+            ctx.fillStyle = "rgba(255,255,255,0.82)";
+            ctx.fill();
+            ctx.strokeStyle = "rgba(185,184,189,0.55)";
+            ctx.lineWidth = 3;
+            ctx.stroke();
+
+            fillTextFit("2:00 PM", W / 2, 835, 640, 74, "Georgia", palette.brown);
+            wrapText("Salón de eventos Iglesia Morrogacho", W / 2, 925, 640, 38, 46, palette.ink, "700");
+            drawImageContain(assetsResolved.elephantSit, W / 2 - 178, 1080 + Math.sin(time * 2) * 10, 356, 356);
+            ctx.globalAlpha = 1;
+        }
+
+        function drawGiftScene(time) {
+            const p = easeInOut(local(time, 8.6, 10.6));
+            const cribAlpha = 0.28 + 0.2 * Math.sin(time * 0.8);
+            ctx.globalAlpha = cribAlpha;
+            drawImageCover(assetsResolved.crib, -250, 0, W + 500, H);
+            ctx.globalAlpha = p;
+
+            roundedRect(92, 270, 896, 930, 64);
+            ctx.fillStyle = "rgba(255,255,255,0.86)";
+            ctx.fill();
+            ctx.strokeStyle = "rgba(185,184,189,0.48)";
+            ctx.lineWidth = 3;
+            ctx.stroke();
+
+            fillTextFit("UN DETALLE PARA", W / 2, 415, 760, 40, "Arial", palette.muted, "800");
+            fillTextFit("Neithan", W / 2, 545, 760, 120, "Georgia", palette.brown);
+            wrapText("Tu presencia es el regalo más bonito. Si nace de tu corazón traer un detalle, será recibido con mucho cariño.", W / 2, 720, 760, 43, 58, palette.ink);
+
+            const chips = ["Algo hecho con amor", "Un detalle útil", "Un recuerdo especial", "Lo que tu corazón elija"];
+            for (let i = 0; i < chips.length; i++) {
+                const row = Math.floor(i / 2);
+                const col = i % 2;
+                const x = 145 + col * 400;
+                const y = 895 + row * 132;
+                roundedRect(x, y, 350, 86, 28);
+                ctx.fillStyle = i % 2 === 0 ? "rgba(255,242,168,0.7)" : "rgba(255,255,255,0.86)";
+                ctx.fill();
+                ctx.strokeStyle = "rgba(185,184,189,0.45)";
+                ctx.stroke();
+                fillTextFit(chips[i], x + 175, y + 43, 300, 31, "Georgia", palette.brown);
+            }
+            ctx.globalAlpha = 1;
+        }
+
+        function drawFinalScene(time) {
+            const p = easeOut(local(time, 13.0, 15.0));
+            drawBalloons(time, 0.8);
+            drawClouds(time);
+            ctx.globalAlpha = p;
+            drawImageContain(assetsResolved.elephantCloud, W / 2 - 250, 250 + Math.sin(time * 2) * 14, 500, 435);
+            fillTextFit("TE ESPERAMOS", W / 2, 850, 820, 92, "Georgia", palette.brown);
+            wrapText("Confirma tu asistencia y celebra con nosotros la llegada de Neithan.", W / 2, 990, 760, 44, 58, palette.ink, "600");
+
+            roundedRect(170, 1190, 740, 154, 54);
+            ctx.fillStyle = "rgba(248,217,74,0.78)";
+            ctx.fill();
+            fillTextFit("16 de agosto · 2:00 PM", W / 2, 1266, 670, 44, "Arial", palette.ink, "800");
+            ctx.globalAlpha = 1;
+        }
+
+        function drawImageContain(img, x, y, w, h) {
+            const scale = Math.min(w / img.width, h / img.height);
+            const iw = img.width * scale;
+            const ih = img.height * scale;
+            ctx.drawImage(img, x + (w - iw) / 2, y + (h - ih) / 2, iw, ih);
+        }
+
+        function drawImageCover(img, x, y, w, h) {
+            const scale = Math.max(w / img.width, h / img.height);
+            const iw = img.width * scale;
+            const ih = img.height * scale;
+            ctx.drawImage(img, x + (w - iw) / 2, y + (h - ih) / 2, iw, ih);
+        }
+
+        function wrapText(text, x, y, maxWidth, size, lineHeight, color, weight = "400") {
+            ctx.font = `${weight} ${size}px Arial`;
+            ctx.fillStyle = color;
+            ctx.textAlign = "center";
+            ctx.textBaseline = "middle";
+            const words = text.split(" ");
+            const lines = [];
+            let line = "";
+            for (const word of words) {
+                const test = line ? `${line} ${word}` : word;
+                if (ctx.measureText(test).width > maxWidth && line) {
+                    lines.push(line);
+                    line = word;
+                } else {
+                    line = test;
+                }
+            }
+            lines.push(line);
+            const startY = y - ((lines.length - 1) * lineHeight) / 2;
+            lines.forEach((l, i) => ctx.fillText(l, x, startY + i * lineHeight));
+        }
+
+        let assetsResolved;
+        let frame = 0;
+        let recorder;
+        let chunks = [];
+        let captureTrack;
+        window.__VIDEO_STATUS__ = { chunks: 0, bytes: 0, base64Length: 0, done: false };
+
+        function drawFrame(frameNumber) {
+            const time = frameNumber / FPS;
+            drawBackground(time);
+
+            if (time < 4.8) drawTitleScene(time);
+            else if (time < 9.2) drawDateScene(time);
+            else if (time < 13.6) drawGiftScene(time);
+            else drawFinalScene(time);
+
+            const fadeIn = clamp01(time / 0.8);
+            const fadeOut = clamp01((DURATION - time) / 0.8);
+            const fade = Math.min(fadeIn, fadeOut);
+            if (fade < 1) {
+                ctx.globalAlpha = 1 - fade;
+                ctx.fillStyle = "#fffdf3";
+                ctx.fillRect(0, 0, W, H);
+                ctx.globalAlpha = 1;
+            }
+        }
+
+        function tick() {
+            drawFrame(frame);
+            if (captureTrack && captureTrack.requestFrame) captureTrack.requestFrame();
+            frame += 1;
+            hint.textContent = renderMode
+                ? `Renderizando video... ${Math.min(100, Math.round((frame / TOTAL_FRAMES) * 100))}%`
+                : "Vista previa animada";
+
+            if (frame <= TOTAL_FRAMES) {
+                setTimeout(tick, 1000 / FPS);
+            } else if (recorder && recorder.state !== "inactive") {
+                recorder.requestData();
+                recorder.stop();
+            }
+        }
+
+        async function start() {
+            assetsResolved = {
+                elephantCloud: await assets.elephantCloud,
+                elephantSit: await assets.elephantSit,
+                crib: await assets.crib
+            };
+
+            if (renderMode) {
+                const stream = canvas.captureStream(FPS);
+                captureTrack = stream.getVideoTracks()[0];
+                recorder = new MediaRecorder(stream);
+                recorder.ondataavailable = (event) => {
+                    if (event.data.size) {
+                        chunks.push(event.data);
+                        window.__VIDEO_STATUS__.chunks = chunks.length;
+                        window.__VIDEO_STATUS__.bytes += event.data.size;
+                    }
+                };
+                recorder.onstop = async () => {
+                    const blob = new Blob(chunks, { type: "video/webm" });
+                    window.__VIDEO_STATUS__.blobSize = blob.size;
+                    const buffer = await blob.arrayBuffer();
+                    const bytes = new Uint8Array(buffer);
+                    let binary = "";
+                    const chunkSize = 0x8000;
+                    for (let i = 0; i < bytes.length; i += chunkSize) {
+                        binary += String.fromCharCode.apply(null, bytes.subarray(i, i + chunkSize));
+                    }
+                    window.__VIDEO_BASE64__ = btoa(binary);
+                    window.__VIDEO_STATUS__.base64Length = window.__VIDEO_BASE64__.length;
+
+                    hint.textContent = "Video generado";
+                    window.__VIDEO_DONE__ = true;
+                    window.__VIDEO_STATUS__.done = true;
+                };
+                recorder.start(500);
+            }
+
+            tick();
+        }
+
+        start().catch((error) => {
+            console.error(error);
+            hint.textContent = "No se pudo cargar el video";
+        });
+    </script>
+</body>
+</html>
