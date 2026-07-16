@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="theme-color" content="#f8d94a">
+    <meta name="description" content="Invitacion Baby Shower - 16 de agosto de 2026, 2:00 PM, Salon de eventos Iglesia Morrogacho.">
+    <title>Baby Shower | 16 de agosto</title>
+    <meta property="og:type" content="website">
+    <meta property="og:title" content="Baby Shower | 16 de agosto">
+    <meta property="og:description" content="Celebremos juntos la dulce espera. 2:00 PM en el Salon de eventos Iglesia Morrogacho.">
+    <meta property="og:image" content="img/elefante-baby.svg">
+    <meta name="twitter:card" content="summary_large_image">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=Montserrat:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+    <link rel="icon" href="img/elefante-baby.svg" type="image/svg+xml">
+</head>
+<body>
+    <section id="intro" class="intro" aria-label="Portada de la invitacion">
+        <div class="intro__balloons" aria-hidden="true">
+            <span></span><span></span><span></span><span></span><span></span>
+        </div>
+        <img class="intro__elephant" src="img/elefante-baby.svg" alt="">
+        <p class="eyebrow">Una celebracion muy especial</p>
+        <h1>Baby Shower</h1>
+        <p class="intro__text">Hay un bebe en camino y queremos compartir esta alegria contigo.</p>
+        <button class="button button--primary" type="button" id="openInvitation">Abrir invitacion</button>
+    </section>
+
+    <main id="invitation" class="page is-hidden" aria-hidden="true">
+        <section class="hero" aria-labelledby="heroTitle">
+            <div class="balloon-arch" aria-hidden="true">
+                <span></span><span></span><span></span><span></span><span></span>
+                <span></span><span></span><span></span><span></span><span></span>
+                <span></span><span></span><span></span><span></span><span></span>
+            </div>
+            <div class="hero__content">
+                <p class="eyebrow">Acompananos a celebrar</p>
+                <h2 id="heroTitle">Baby Shower</h2>
+                <p class="hero__message">
+                    Un pequeno amor esta por llegar. Entre detalles dulces, globos amarillos y mucha ternura,
+                    queremos vivir este momento contigo.
+                </p>
+                <div class="date-card" aria-label="Fecha y hora del evento">
+                    <span class="date-card__month">Agosto</span>
+                    <strong>16</strong>
+                    <span>Domingo | 2:00 PM</span>
+                </div>
+                <div class="hero__actions">
+                    <a class="button button--primary" id="confirmTop" href="#">Confirmar asistencia</a>
+                    <a class="button button--ghost" href="#detalles">Ver detalles</a>
+                </div>
+            </div>
+            <div class="hero__scene" aria-label="Ilustracion de elefante para baby shower">
+                <img class="elephant" src="img/elefante-baby.svg" alt="Elefante tierno levantando la trompa">
+                <div class="dessert-table" aria-hidden="true">
+                    <span></span><span></span><span></span><span></span>
+                </div>
+            </div>
+        </section>
+
+        <section class="countdown-section" aria-label="Cuenta regresiva">
+            <p>Faltan</p>
+            <div class="countdown" id="countdown">
+                <div><strong id="days">--</strong><span>Dias</span></div>
+                <div><strong id="hours">--</strong><span>Horas</span></div>
+                <div><strong id="minutes">--</strong><span>Min</span></div>
+                <div><strong id="seconds">--</strong><span>Seg</span></div>
+            </div>
+        </section>
+
+        <section id="detalles" class="details" aria-labelledby="detailsTitle">
+            <div class="section-heading">
+                <p class="eyebrow">Detalles del dia</p>
+                <h2 id="detailsTitle">Nos encantaria verte alli</h2>
+            </div>
+            <div class="detail-grid">
+                <article class="detail-card">
+                    <span class="detail-card__icon">16</span>
+                    <h3>Fecha</h3>
+                    <p>Domingo, 16 de agosto de 2026</p>
+                </article>
+                <article class="detail-card">
+                    <span class="detail-card__icon">2</span>
+                    <h3>Hora</h3>
+                    <p>2:00 PM</p>
+                </article>
+                <article class="detail-card">
+                    <span class="detail-card__icon">M</span>
+                    <h3>Lugar</h3>
+                    <p>Salon de eventos Iglesia Morrogacho</p>
+                </article>
+            </div>
+        </section>
+
+        <section class="gift-section" aria-labelledby="giftTitle">
+            <div class="gift-copy">
+                <p class="eyebrow">Con amor</p>
+                <h2 id="giftTitle">Lluvia de regalos</h2>
+                <p>
+                    Tu presencia es el regalo mas bonito. Si deseas traer un detalle para el bebe,
+                    puedes elegir algo util para sus primeros dias.
+                </p>
+            </div>
+            <div class="gift-list" aria-label="Ideas de regalos">
+                <span>Panales</span>
+                <span>Panitos humedos</span>
+                <span>Ropita</span>
+                <span>Articulos de aseo</span>
+            </div>
+        </section>
+
+        <section class="rsvp" aria-labelledby="rsvpTitle">
+            <img src="img/elefante-baby.svg" alt="" aria-hidden="true">
+            <div>
+                <p class="eyebrow">Reserva la fecha</p>
+                <h2 id="rsvpTitle">Confirma tu asistencia</h2>
+                <p>Ayudanos a preparar cada detalle de este dia tan especial.</p>
+            </div>
+            <a class="button button--primary" id="confirmBottom" href="#">Confirmar por WhatsApp</a>
+        </section>
+    </main>
+
+    <div id="toast" class="toast" role="status" aria-live="polite"></div>
+    <script src="script.js"></script>
+</body>
+</html>
